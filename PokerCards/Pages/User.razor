@@ -1,0 +1,88 @@
+﻿@page "/"
+@page "/user"
+
+@using PokerCards.Data
+@implements IDisposable
+@inject VotingService pokerVote
+
+
+
+<h1> Story Size Voting </h1>
+<h2>@pokerVote.StoryName</h2>
+
+<div>
+    <label>Username</label>
+    <input disabled="@IsDisabled" placeholder="Username" @bind-value="Username" type="text" />
+</div>
+
+@if (!pokerVote.showVotes)
+{
+    <div>
+        @if (canVote || changeVote)
+        {
+
+            <button @onclick="() => addVote(StorySize.XS)">XS</button>
+            <button @onclick="() => addVote(StorySize.S)">S</button>
+            <button @onclick="() => addVote(StorySize.M)">M</button>
+            <button @onclick="() => addVote(StorySize.L)">L</button>
+            <button @onclick="() => addVote(StorySize.XL)">XL</button>
+        }
+
+        else
+        {
+            <div>Your Vote: @pokerVote.StorySizeVotes.FirstOrDefault(item => item.User == Username).Size</div>
+            <button @onclick="() => changeVote = true">Change Vote</button>
+            <div>Waiting for voting to finish. @pokerVote.StorySizeVotes.Count() votes counted.</div>
+        }
+    </div>
+}
+
+else
+{
+    foreach(SizeVote vote in pokerVote.StorySizeVotes)
+    {
+        <div>Vote for @vote.Size from @vote.User</div>
+    }
+}
+
+
+@code {
+    private void addVote(StorySize vote)
+    {
+        pokerVote.addStorySizeVotes(new SizeVote() { Size = vote, User = Username });
+        changeVote = false;
+        IsDisabled = true;
+    }
+
+    protected bool IsDisabled { get; set; } = false;
+
+    private string Username { get; set; }
+
+    private bool canVote
+    {
+        get
+        {
+            return pokerVote.StorySizeVotes.Any(item => item.User == Username) ? false : true;
+        }
+    }
+
+    private bool changeVote { get; set; } = false;
+
+    protected override void OnInitialized()
+    {
+        pokerVote.OnChange += OnUpdate;
+    }
+
+    public void Dispose()
+    {
+        pokerVote.OnChange -= OnUpdate;
+    }
+
+    void OnUpdate()
+    {
+        InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+    }
+}

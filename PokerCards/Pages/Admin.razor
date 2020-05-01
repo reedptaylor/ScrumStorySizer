@@ -1,0 +1,51 @@
+﻿@page "/admin"
+
+@using PokerCards.Data
+@implements IDisposable
+@inject VotingService pokerVote
+
+<h1>Admin Panel</h1>
+
+<div>
+    <label>Story Name</label>
+    <input type="text" @oninput="(e) => pokerVote.updateStoryName(e.Value.ToString())" />
+</div>
+
+<div>
+    <button @onclick="() => pokerVote.revealVotes()">Show Results</button>
+    <button @onclick="() => pokerVote.clearStorySizeVotes()">Clear Votes</button>
+</div>
+
+@if (pokerVote.showVotes)
+{
+    foreach (SizeVote vote in pokerVote.StorySizeVotes)
+    {
+        <div>Vote for @vote.Size from @vote.User</div>
+    }
+}
+
+else
+{
+    <div>@pokerVote.StorySizeVotes.Count() votes counted.</div>
+}
+
+
+@code {
+    protected override void OnInitialized()
+    {
+        pokerVote.OnChange += OnUpdate;
+    }
+
+    public void Dispose()
+    {
+        pokerVote.OnChange -= OnUpdate;
+    }
+
+    void OnUpdate()
+    {
+        InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+    }
+}
