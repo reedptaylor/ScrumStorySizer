@@ -1,47 +1,46 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using PokerCardsShared.Models;
 
-namespace PokerCards.Data
+namespace PokerCardsShared.Services
 {
-    public class VotingService
+    public class VotingService : IVotingService
     {
         public string StoryName { get; set; }
 
         public List<SizeVote> StorySizeVotes { get; private set; } = new List<SizeVote>();
 
-        public void addStorySizeVotes(SizeVote vote)
+        public bool ShowVotes { get; private set; }
+
+        public event Action OnChange;
+
+        public void AddStorySizeVotes(SizeVote vote)
         {
             StorySizeVotes.RemoveAll(item => item.User == vote.User);
             StorySizeVotes.Add(vote);
             NotifyDataChanged();
         }
 
-        public void clearStorySizeVotes()
+        public void ClearStorySizeVotes()
         {
             StorySizeVotes.Clear();
-            showVotes = false;
+            ShowVotes = false;
             NotifyDataChanged();
         }
 
-        public void updateStoryName(string name)
+        public void UpdateStoryName(string name)
         {
             StoryName = name;
             NotifyDataChanged();
         }
 
-        public void revealVotes()
+        public void RevealVotes()
         {
-            showVotes = true;
+            ShowVotes = true;
             NotifyDataChanged();
         }
 
-        public bool showVotes { get; set; }
-
-        public event Action OnChange;
-
-        public void NotifyDataChanged()
+        private void NotifyDataChanged()
         {
             OnChange?.Invoke();
         }

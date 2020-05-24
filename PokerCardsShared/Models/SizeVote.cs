@@ -1,5 +1,6 @@
-﻿using System;
-namespace PokerCards.Data
+﻿using PokerCardsShared.Enums;
+
+namespace PokerCardsShared.Models
 {
     public class SizeVote
     {

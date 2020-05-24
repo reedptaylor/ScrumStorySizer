@@ -1,0 +1,44 @@
+@page "/admin"
+
+<h3>Admin Panel</h3>
+
+<div class="row">
+    <label style="width:100%">Story Name</label>
+    <input class="form-control" style="max-width: 400px;" type="text" @bind-value="StoryName" @oninput="(e) => PokerVote.UpdateStoryName(e.Value.ToString())" />
+</div>
+
+<div class="row">
+    <button class="btn btn-primary btn-vote" disabled="@(PokerVote.StorySizeVotes.Count == 0)" @onclick="() => PokerVote.RevealVotes()">Show Results</button>
+    <button class="btn btn-primary btn-vote" @onclick="() => PokerVote.ClearStorySizeVotes()">Clear Votes</button>
+    <button autofocus class="btn btn-primary btn-vote" @onclick='() => { PokerVote.UpdateStoryName(""); PokerVote.ClearStorySizeVotes();  StoryName = ""; }'>New Story</button>
+</div>
+
+@if (PokerVote.ShowVotes)
+{
+    <div class="row">
+        <div class="col">
+            @foreach (var group in PokerVote.StorySizeVotes.GroupBy(item => item.Size).Select(grp => grp.ToList()).ToList())
+            {
+                if (group.Count > 0)
+                {
+                    <div class="row">
+                        @group.FirstOrDefault().Size : @group.Count
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            @foreach (SizeVote vote in PokerVote.StorySizeVotes)
+            {
+                <div class="row">Vote for @vote.Size from @vote.User</div>
+            }
+        </div>
+    </div>
+}
+
+else
+{
+    <div>@PokerVote.StorySizeVotes.Count() votes counted.</div>
+}

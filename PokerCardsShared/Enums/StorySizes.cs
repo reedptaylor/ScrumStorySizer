@@ -1,4 +1,4 @@
-namespace PokerCards.Data
+namespace PokerCardsShared.Enums
 {
     public enum StorySize
     {

@@ -1,0 +1,84 @@
+﻿@page "/"
+@page "/user"
+
+<div class="row">
+    <div class="col">
+        <h3> Scrum Team Page </h3>
+        <h4>Story Name: @PokerVote.StoryName</h4>
+    </div>
+
+</div>
+
+
+<div class="row">
+    <div class="col">
+        <label class="pr-2" style="width:100%">Username</label>
+        <input class="form-control" style="max-width: 300px;" disabled="@IsDisabled" placeholder="Username" @bind-value="Username" @bind-value:event="oninput" type="text" />
+    </div>
+</div>
+
+@if (!PokerVote.ShowVotes)
+{
+<div class="row">
+    <div class="col">
+        @if (CanVote || ChangeVote)
+        {
+            <div class="row">
+                <button class="btn btn-primary btn-vote" disabled="@string.IsNullOrWhiteSpace(Username)" @onclick="() => AddVote(StorySize.XS)">XS</button>
+                <button class="btn btn-primary btn-vote" disabled="@string.IsNullOrWhiteSpace(Username)" @onclick="() => AddVote(StorySize.S)">S</button>
+                <button class="btn btn-primary btn-vote" disabled="@string.IsNullOrWhiteSpace(Username)" @onclick="() => AddVote(StorySize.M)">M</button>
+                <button class="btn btn-primary btn-vote" disabled="@string.IsNullOrWhiteSpace(Username)" @onclick="() => AddVote(StorySize.L)">L</button>
+                <button class="btn btn-primary btn-vote" disabled="@string.IsNullOrWhiteSpace(Username)" @onclick="() => AddVote(StorySize.XL)">XL</button>
+            </div>
+            @if (string.IsNullOrWhiteSpace(Username))
+            {
+                <div class="row">Enter a username to start voting.</div>
+            }
+        }
+
+        else
+        {
+            @if (PokerVote.StorySizeVotes.Count() == 0)
+            {
+                <div class="row">Waiting for new story name.</div>
+            }
+            else
+            {
+                <div class="row">
+                    <div class="pr-3">Your Vote: @PokerVote.StorySizeVotes.FirstOrDefault(item => item.User == Username).Size</div>
+                    <button class="btn btn-primary" @onclick="() => ChangeVote = true">Change Vote</button>
+                </div>
+
+                <div class="row">Waiting for voting to finish. @PokerVote.StorySizeVotes.Count() votes counted.</div>
+            }
+
+        }
+    </div>
+</div>
+}
+
+else
+{
+    <div class="row">
+        <div class="col">
+            @foreach (var group in PokerVote.StorySizeVotes.GroupBy(item => item.Size).Select(grp => grp.ToList()).ToList())
+            {
+                if (group.Count > 0)
+                {
+                    <div class="row">
+                        @group.FirstOrDefault().Size : @group.Count
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            @foreach (SizeVote vote in PokerVote.StorySizeVotes)
+            {
+                <div class="row">Vote for @vote.Size from @vote.User</div>
+            }
+        </div>
+    </div>
+    
+}
