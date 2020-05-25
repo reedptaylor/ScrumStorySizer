@@ -1,0 +1,23 @@
+﻿<div class="row">
+    <div class="col">
+        @foreach (var group in SizeVotes.GroupBy(item => item.Size).Select(grp => grp.ToList()).ToList())
+        {
+            if (group.Count > 0)
+            {
+                <div class="row">
+                    @group.FirstOrDefault().Size : @group.Count
+                </div>
+            }
+        }
+    </div>
+    <div class="col">
+        @foreach (SizeVote vote in SizeVotes)
+        {
+            <div class="row">Vote for @vote.Size from @vote.User</div>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<SizeVote> SizeVotes { get; set; }
+}

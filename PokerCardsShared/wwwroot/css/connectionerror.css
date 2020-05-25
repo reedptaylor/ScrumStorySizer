@@ -1,0 +1,39 @@
+﻿.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+
+    .modal.show-modal {
+        display: block;
+    }
+
+    .modal .modal-content {
+        background-color: #008080;
+        font-family: sans-serif;
+        color: black;
+        margin: 30vh auto;
+        padding: 20px;
+        width: fit-content;
+        max-width: 80vw;
+    }
+
+        .modal .modal-content a {
+            color: black !important;
+        }
+
+
+    .modal .dismiss {
+        font-weight: 500 !important;
+        font-size: 14px;
+    }
+
+        .modal .dismiss:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
