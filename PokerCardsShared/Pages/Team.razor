@@ -1,0 +1,63 @@
+﻿@page "/"
+@page "/team"
+
+<div class="row">
+    <div class="col">
+        <h3> Scrum Team View </h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <label class="pr-2" style="width:100%">Display Name</label>
+        <input class="form-control" style="max-width: 300px;" disabled="@IsDisabled" placeholder="Display Name" @bind-value="Username" @bind-value:event="oninput" type="text" />
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <label>Story Name</label>
+        <h4>@(string.IsNullOrWhiteSpace(PokerVote.StoryName) ? "Waiting..." : PokerVote.StoryName)</h4>
+    </div>
+</div>
+
+@if (!PokerVote.ShowVotes)
+{
+    <div class="row">
+        <div class="col">
+            @if (CanVote || ChangeVote)
+            {
+                <div class="row">
+                    <button class="btn btn-primary btn-vote" disabled="@string.IsNullOrWhiteSpace(Username)" @onclick="() => AddVote(StorySize.XS)">XS</button>
+                    <button class="btn btn-primary btn-vote" disabled="@string.IsNullOrWhiteSpace(Username)" @onclick="() => AddVote(StorySize.S)">S</button>
+                    <button class="btn btn-primary btn-vote" disabled="@string.IsNullOrWhiteSpace(Username)" @onclick="() => AddVote(StorySize.M)">M</button>
+                    <button class="btn btn-primary btn-vote" disabled="@string.IsNullOrWhiteSpace(Username)" @onclick="() => AddVote(StorySize.L)">L</button>
+                    <button class="btn btn-primary btn-vote" disabled="@string.IsNullOrWhiteSpace(Username)" @onclick="() => AddVote(StorySize.XL)">XL</button>
+                </div>
+                @if (string.IsNullOrWhiteSpace(Username))
+                {
+                    <div class="row">Enter a username to start voting.</div>
+                }
+            }
+
+            else
+            {
+                @if (PokerVote.StorySizeVotes.Count() > 0)
+                {
+                    <div class="row">
+                        <div class="pr-3">Your Vote: @PokerVote.StorySizeVotes.FirstOrDefault(item => item.User == Username).Size</div>
+                        <button class="btn btn-primary" @onclick="() => ChangeVote = true">Change Vote</button>
+                    </div>
+
+                    <div class="row">Waiting for voting to finish. @PokerVote.StorySizeVotes.Count() votes counted.</div>
+                }
+
+            }
+        </div>
+    </div>
+}
+
+else
+{
+    <Votes SizeVotes="PokerVote.StorySizeVotes" />
+}

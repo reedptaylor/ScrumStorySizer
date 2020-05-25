@@ -4,7 +4,7 @@ using PokerCardsShared.Services;
 
 namespace PokerCardsShared.Pages
 {
-    public partial class Admin : IDisposable
+    public partial class Master : IDisposable
     {
 
         [Inject] IVotingService PokerVote { get; set; }

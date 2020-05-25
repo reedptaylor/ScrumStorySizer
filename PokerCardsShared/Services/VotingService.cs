@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.SignalR.Client;
 using PokerCardsShared.Models;
 
 namespace PokerCardsShared.Services
 {
     public class VotingService : IVotingService
     {
+        public HubConnection HubConnection => null;
+
         public string StoryName { get; set; }
 
         public List<SizeVote> StorySizeVotes { get; private set; } = new List<SizeVote>();

@@ -31,15 +31,21 @@ app {
     margin-bottom: 15px;
 }
 
+.col > .row {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
 .top-row {
     height: 3.5rem;
     display: flex;
     align-items: center;
+    background: #010500;
 }
 
 .main {
     flex: 1;
-    max-width: 800px;
+    max-width: 1200px;
     margin-left: auto;
     margin-right: auto;
 }

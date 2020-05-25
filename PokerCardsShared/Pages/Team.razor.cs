@@ -7,7 +7,7 @@ using PokerCardsShared.Services;
 
 namespace PokerCardsShared.Pages
 {
-    public partial class User : IDisposable
+    public partial class Team : IDisposable
     {
         [Inject] IVotingService PokerVote { get; set; }
 

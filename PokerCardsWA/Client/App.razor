@@ -1,4 +1,7 @@
-<Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="new[] { typeof(PokerCardsShared.Pages.Admin).Assembly }">
+@using Microsoft.AspNetCore.SignalR.Client
+@inject IVotingService VotingService
+
+<Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="new[] { typeof(PokerCardsShared.Pages.Master).Assembly }">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
     </Found>
@@ -8,3 +11,29 @@
         </LayoutView>
     </NotFound>
 </Router>
+<ConnectionError State="@VotingService.HubConnection.State" />
+
+
+@code {
+    private Task OnUpdate()
+    {
+        InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+        return Task.CompletedTask;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (VotingService.HubConnection.State == HubConnectionState.Disconnected)
+        {
+            await VotingService.HubConnection.StartAsync();
+            await VotingService.HubConnection.SendAsync("NewConnection");
+        }
+
+        VotingService.HubConnection.Closed += (_) => OnUpdate();
+        VotingService.HubConnection.Reconnected += (_) => OnUpdate();
+        VotingService.HubConnection.Reconnecting += (_) => OnUpdate();
+    }
+}

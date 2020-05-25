@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
+using PokerCardsWA.Server.Hubs;
 
 namespace PokerCardsWA.Server
 {
@@ -25,6 +26,15 @@ namespace PokerCardsWA.Server
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddSignalR();
+            services.AddResponseCompression(options =>
+            {
+                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/octet-stream" });
+            });
+
+            services.AddSingleton<CacheService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,6 +62,7 @@ namespace PokerCardsWA.Server
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
+                endpoints.MapHub<VoteHub>("/votehub");
                 endpoints.MapFallbackToFile("index.html");
             });
         }

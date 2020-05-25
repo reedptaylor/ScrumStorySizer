@@ -1,0 +1,36 @@
+@page "/master"
+
+<div class="row">
+    <div class="col">
+        <h3>Scrum Master View</h3>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <label style="width:100%">Story Name</label>
+        <input class="form-control" style="max-width: 400px;" type="text" @bind-value="StoryName" @oninput="(e) => PokerVote.UpdateStoryName(e.Value.ToString())" />
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <button class="btn btn-primary btn-vote" disabled="@(PokerVote.StorySizeVotes.Count == 0)" @onclick="() => PokerVote.RevealVotes()">Show Results</button>
+        <button class="btn btn-primary btn-vote" @onclick="() => PokerVote.ClearStorySizeVotes()">Clear Votes</button>
+        <button autofocus class="btn btn-primary btn-vote" @onclick='() => { PokerVote.UpdateStoryName(""); PokerVote.ClearStorySizeVotes();  StoryName = ""; }'>New Story</button>
+    </div>
+</div>
+
+@if (PokerVote.ShowVotes)
+{
+    <Votes SizeVotes="PokerVote.StorySizeVotes" />
+}
+
+else
+{
+    <div class="row">
+        <div class="col">
+            <div>@PokerVote.StorySizeVotes.Count() votes counted.</div>
+        </div>
+    </div>
+}
