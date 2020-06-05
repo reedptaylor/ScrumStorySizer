@@ -1,7 +1,6 @@
 #!/bin/bash
 sudo systemctl stop kestrel-pokercards.service
 sudo systemctl stop kestrel-pokercards-wa.service
-dotnet build
-dotnet publish
+sudo dotnet publish
 sudo systemctl start kestrel-pokercards-wa.service
 echo 'Successfully published'

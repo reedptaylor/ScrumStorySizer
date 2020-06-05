@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.AspNetCore.Components;
 using PokerCardsShared.Services;
 
@@ -10,7 +10,7 @@ namespace PokerCardsShared.Pages
         [Inject] IVotingService PokerVote { get; set; }
 
 
-        private string StoryName { get; set; } = "";
+        private string StoryName { get; set; }
 
         protected override void OnInitialized()
         {
