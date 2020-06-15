@@ -9,6 +9,13 @@ namespace PokerCardsShared.Pages
 
         [Inject] IVotingService PokerVote { get; set; }
 
+        private bool ShowResultsDisabled
+        {
+            get
+            {
+                return PokerVote.StorySizeVotes.Count == 0 || PokerVote.ShowVotes;
+            }
+        }
 
         private string StoryName { get; set; }
 

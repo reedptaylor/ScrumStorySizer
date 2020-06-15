@@ -1,19 +1,27 @@
 ﻿<div class="row">
     <div class="col">
-        @foreach (var group in SizeVotes.GroupBy(item => item.Size).Select(grp => grp.ToList()).ToList())
+        @foreach (List<SizeVote> group in SizeVotes.OrderByDescending(item => item.Size).GroupBy(item => item.Size).Select(grp => grp.ToList()).ToList())
         {
             if (group.Count > 0)
             {
-                <div class="row">
-                    @group.FirstOrDefault().Size : @group.Count
+                int percent = group.Count * 100 / SizeVotes.Count;
+                string title = group.FirstOrDefault().Size switch
+                {
+                    StorySize.XL => "Story size 8",
+                    StorySize.L => "Story size 5",
+                    StorySize.M => "Story size 3",
+                    StorySize.S => "Story size 2",
+                    StorySize.XS => "Story size 1",
+                    _ => ""
+                };
+                <div class="mt-3 mb-2" title="@title">
+                    <span class="progress-label mr-2">@group.FirstOrDefault().Size</span>
+                    <div class="progress">
+                        <div class="progress-bar" style="width: @(percent)%" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100">@group.Count</div>
+                    </div>
                 </div>
+                <div class="progress-note">@string.Join(", ", group.Select(item => item.User))</div>
             }
-        }
-    </div>
-    <div class="col">
-        @foreach (SizeVote vote in SizeVotes)
-        {
-            <div class="row">Vote for @vote.Size from @vote.User</div>
         }
     </div>
 </div>

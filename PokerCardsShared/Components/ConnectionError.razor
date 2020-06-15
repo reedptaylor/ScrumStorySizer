@@ -2,7 +2,7 @@
 
 <div id="inactive-modal" tabindex="0" class="modal @((State == HubConnectionState.Connected || State == HubConnectionState.Connecting) ? "" : "show-modal")">
     <div class="modal-content d-block">
-        <div id="inactive-modal-body" class="d-inline-block">@ConnectionState</div>
+        <div id="inactive-modal-body" class="d-inline-block">@ConnectionState.</div>
         @if (State == HubConnectionState.Disconnected)
         {
             <div class="text-right dismiss d-inline-block pl-2" @onclick="() => NavigationManager.NavigateTo(NavigationManager.Uri, true)">Reload</div>

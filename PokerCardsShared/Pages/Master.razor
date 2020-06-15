@@ -1,36 +1,40 @@
 @page "/master"
 
-<div class="row">
-    <div class="col">
-        <h3>Scrum Master View</h3>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col">
-        <label style="width:100%">Story Name</label>
-        <input class="form-control" style="max-width: 400px;" type="text" @bind-value="StoryName" @oninput="(e) => PokerVote.UpdateStoryName(e.Value.ToString())" />
-    </div>
-</div>
-
-<div class="row">
-    <div class="col">
-        <button class="btn btn-primary btn-vote" disabled="@(PokerVote.StorySizeVotes.Count == 0)" @onclick="() => PokerVote.RevealVotes()">Show Results</button>
-        <button class="btn btn-primary btn-vote" @onclick="() => PokerVote.ClearStorySizeVotes()">Clear Votes</button>
-        <button autofocus class="btn btn-primary btn-vote" @onclick='() => { PokerVote.UpdateStoryName(""); PokerVote.ClearStorySizeVotes();  StoryName = ""; }'>New Story</button>
-    </div>
-</div>
-
-@if (PokerVote.ShowVotes)
-{
-    <Votes SizeVotes="PokerVote.StorySizeVotes" />
-}
-
-else
-{
-    <div class="row">
-        <div class="col">
-            <div>@PokerVote.StorySizeVotes.Count() votes counted.</div>
+<div class="card bg-dark">
+    <div class="card-body">
+        <h5 class="card-title">Scrum Master</h5>
+        <hr />
+        <div class="row">
+            <div class="col">
+                <label style="width:100%">Story Name</label>
+                <input autofocus class="form-control" style="max-width: 600px;" type="text" @bind-value="StoryName" @oninput="(e) => PokerVote.UpdateStoryName(e.Value.ToString())" />
+            </div>
+        </div>
+        <div class="mt-4 d-flex">
+            <div class="btn-group" role="group" style="width:390px;" aria-label="Admin group">
+                <button type="button" class="btn btn-primary btn-admin" disabled="@ShowResultsDisabled" @onclick="() => PokerVote.RevealVotes()">Show Results</button>
+                <button type="button" class="btn btn-primary btn-admin" @onclick="() => PokerVote.ClearStorySizeVotes()">Clear Votes</button>
+                <button type="button" class="btn btn-primary btn-admin" @onclick='() => { PokerVote.UpdateStoryName(""); PokerVote.ClearStorySizeVotes();  StoryName = ""; }'>New Story</button>
+            </div>
         </div>
     </div>
-}
+</div>
+
+<div class="card bg-dark">
+    <div class="card-body">
+        <h5 class="card-title">Results</h5>
+        <hr />
+        @if (!PokerVote.ShowVotes)
+        {
+            <div class="row">
+                <div class="col">
+                    @PokerVote.StorySizeVotes.Count() votes counted.
+                </div>
+            </div>
+        }
+        else
+        {
+            <Votes SizeVotes="PokerVote.StorySizeVotes" />
+        }
+    </div>
+</div>

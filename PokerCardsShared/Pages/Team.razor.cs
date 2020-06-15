@@ -15,18 +15,21 @@ namespace PokerCardsShared.Pages
         {
             PokerVote.AddStorySizeVotes(new SizeVote() { Size = vote, User = Username });
             ChangeVote = false;
-            IsDisabled = true;
+            NameDisabled = true;
+            jumboclass = "jumbo-shrink";
         }
 
-        protected bool IsDisabled { get; set; } = false;
+        private string jumboclass = "";
+
+        protected bool NameDisabled { get; set; } = false;
 
         private string Username { get; set; }
 
-        private bool CanVote
+        private bool VoteDisabled
         {
             get
             {
-                return !(PokerVote.StorySizeVotes.Any(item => item.User == Username) || string.IsNullOrWhiteSpace(PokerVote.StoryName));
+                return string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(PokerVote.StoryName);
             }
         }
 
