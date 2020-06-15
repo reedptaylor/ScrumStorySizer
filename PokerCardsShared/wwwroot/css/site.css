@@ -147,19 +147,11 @@ app {
 }
 
 .jumbotron {
-    transition: height 300ms linear;
-}
-
-.jumbotron.team {
-    height: 382px;
+    transition: all 300ms linear;
 }
 
 .jumbo-shrink {
     padding: 2rem;
-}
-
-.jumbo-shrink.team {
-    height: 221px;
 }
 
 .jumbo-shrink h1 {
