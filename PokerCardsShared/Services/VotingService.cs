@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 using PokerCardsShared.Models;
 
@@ -14,6 +15,8 @@ namespace PokerCardsShared.Services
         public List<SizeVote> StorySizeVotes { get; private set; } = new List<SizeVote>();
 
         public bool ShowVotes { get; private set; }
+
+        public int TimeLeft => 0;
 
         public event Action OnChange;
 
@@ -43,9 +46,19 @@ namespace PokerCardsShared.Services
             NotifyDataChanged();
         }
 
-        private void NotifyDataChanged()
+        public void NotifyDataChanged()
         {
             OnChange?.Invoke();
+        }
+
+        public void TimeRemaining(int seconds)
+        {
+            return;
+        }
+
+        public void CancelTimer()
+        {
+            return;
         }
     }
 }

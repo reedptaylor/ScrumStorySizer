@@ -82,7 +82,7 @@ input::placeholder {
 }
 
 .btn-admin {
-    max-width: 130px;
+    max-width: 170px;
 }
 
 app {
@@ -198,6 +198,13 @@ app {
 }
 
 @media (max-width: 767.98px) {
+    .display-4 {
+        font-size: 1.5rem !important;
+    }
+
+    .lead {
+        font-size: 1rem;
+    }
 
     .main {
         margin-left: 20px;

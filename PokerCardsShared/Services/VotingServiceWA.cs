@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using PokerCardsShared.Models;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.AspNetCore.Components;
+using System.Threading.Tasks;
 
 namespace PokerCardsShared.Services
 {
@@ -33,12 +34,14 @@ namespace PokerCardsShared.Services
             HubConnection.On("ReceiveRevealVotes", () =>
             {
                 ShowVotes = true;
+                TimeLeft = 0;
                 NotifyDataChanged();
             });
 
             HubConnection.On<string>("ReceiveUpdateStoryName", (name) =>
             {
                 StoryName = name;
+                TimeLeft = 0;
                 NotifyDataChanged();
             });
 
@@ -49,6 +52,18 @@ namespace PokerCardsShared.Services
                 ShowVotes = showVotes;
                 NotifyDataChanged();
             });
+
+            HubConnection.On<int>("TimeRemaining", (seconds) =>
+            {
+                TimeLeft = seconds;
+                NotifyDataChanged();
+            });
+
+            HubConnection.On("CancelTimer", () =>
+            {
+                TimeLeft = 0;
+                NotifyDataChanged();
+            });
         }
 
         public string StoryName { get; set; }
@@ -56,6 +71,8 @@ namespace PokerCardsShared.Services
         public List<SizeVote> StorySizeVotes { get; private set; } = new List<SizeVote>();
 
         public bool ShowVotes { get; private set; }
+
+        public int TimeLeft { get; set; } = 0;
 
         public event Action OnChange;
 
@@ -77,6 +94,16 @@ namespace PokerCardsShared.Services
         public void UpdateStoryName(string name)
         {
             HubConnection.SendAsync("UpdateStoryName", name);
+        }
+
+        public void TimeRemaining(int seconds)
+        {
+            HubConnection.SendAsync("TimeRemaining", seconds);
+        }
+
+        public void CancelTimer()
+        {
+            HubConnection.SendAsync("CancelTimer");
         }
 
         private void NotifyDataChanged()

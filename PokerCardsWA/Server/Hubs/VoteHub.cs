@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using PokerCardsShared.Models;
 
@@ -42,6 +43,16 @@ namespace PokerCardsWA.Server.Hubs
         public async Task NewConnection()
         {
             await Clients.Caller.SendAsync("ReceiveCache", _cacheService.StoryName, _cacheService.StorySizeVotes, _cacheService.ShowVotes);
+        }
+
+        public async Task CancelTimer()
+        {
+            await Clients.All.SendAsync("CancelTimer");
+        }
+
+        public async Task TimeRemaining(int seconds)
+        {
+            await Clients.All.SendAsync("TimeRemaining", seconds);
         }
     }
 }

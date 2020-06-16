@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using PokerCardsShared.Services;
 
@@ -18,6 +19,25 @@ namespace PokerCardsShared.Pages
         }
 
         private string StoryName { get; set; }
+
+        private bool TimerState { get; set; }
+
+        private async Task StartTimer(int seconds)
+        {
+            Console.WriteLine("WTF");
+            TimerState = true;
+            while (seconds > 0 && TimerState)
+            {
+                PokerVote.TimeRemaining(seconds);
+                seconds--;
+                await Task.Delay(1000);
+            }
+            if (TimerState)
+            {
+                PokerVote.RevealVotes();
+                TimerState = false;
+            }
+        }
 
         protected override void OnInitialized()
         {

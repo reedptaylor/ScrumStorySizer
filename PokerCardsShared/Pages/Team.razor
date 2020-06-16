@@ -45,6 +45,10 @@
             {
                 <text>Waiting for a new story.</text>
             }
+            else if (PokerVote.TimeLeft > 0)
+            {
+                <text>Time remaining: @PokerVote.TimeLeft second@(PokerVote.TimeLeft != 1 ? "s" : "")</text>
+            }
         </div>
     </div>
 </div>

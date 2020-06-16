@@ -20,5 +20,6 @@
     <Folder Include="Components\" />
     <Folder Include="Pages\" />
     <Folder Include="Layouts\" />
+    <Folder Include="wwwroot\fonts\" />
   </ItemGroup>
 </Project>
