@@ -24,12 +24,14 @@
     </app>
 
     <div id="blazor-error-ui">
-        An unhandled error has occurred.
-        <a href="" class="reload">Reload</a>
-        <a class="dismiss">🗙</a>
+        <div tabindex="0" class="modal show-modal">
+            <div class="modal-content d-block">
+                <div id="inactive-modal-body" class="d-inline-block">An unhandled error has occurred.</div>
+                <a href="" class="text-right dismiss d-inline-block pl-2">Reload</a>
+            </div>
+        </div>
     </div>
     <script src="_framework/blazor.webassembly.js"></script>
-    <script>navigator.serviceWorker.register('service-worker.js');</script>
 </body>
 
 </html>
