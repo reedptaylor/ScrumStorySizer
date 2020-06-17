@@ -17,7 +17,7 @@
                 <div class="mt-3 mb-2" title="@title">
                     <span class="progress-label mr-2">@group.FirstOrDefault().Size</span>
                     <div class="progress">
-                        <div class="progress-bar" style="width: @(percent)%" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100">@group.Count votes</div>
+                        <div class="progress-bar" style="width: @(percent)%" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100">@group.Count vote@(group.Count == 1 ? "" : "s")</div>
                     </div>
                 </div>
                 <div class="progress-note">@string.Join(", ", group.Select(item => item.User))</div>
