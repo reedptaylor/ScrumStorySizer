@@ -203,6 +203,7 @@ app {
         margin-left: auto;
         margin-right: auto;
     }
+    
 }
 
 @media (min-width: 768px) {
@@ -223,5 +224,16 @@ app {
     .navbar-toggler {
         display: none;
     }
+}
 
+@media (max-width: 450px) {
+    .vote-grp-lg, .nav-menu {
+        display: none !important;
+    }
+}
+
+@media (min-width: 450px) {
+    .vote-grp-sm {
+        display: none;
+    }
 }

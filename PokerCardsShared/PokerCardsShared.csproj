@@ -21,5 +21,6 @@
     <Folder Include="Pages\" />
     <Folder Include="Layouts\" />
     <Folder Include="wwwroot\fonts\" />
+    <Folder Include="wwwroot\js\" />
   </ItemGroup>
 </Project>

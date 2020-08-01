@@ -21,13 +21,30 @@
         </div>
         @if (!PokerVote.ShowVotes && (!PokerVote.StorySizeVotes.Any(item => item.User == Username) || ChangeVote))
         {
-            <div class="d-flex mt-4 mx-auto">
+            <div class="vote-grp-lg d-flex mt-4 mx-auto">
                 <div class="btn-group mx-auto" role="group" style="width:500px;" aria-label="Voting group">
                     <button type="button" title="Story Size 1" class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.XS)">XS</button>
                     <button type="button" title="Story Size 2" class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.S)">S</button>
                     <button type="button" title="Story Size 3" class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.M)">M</button>
                     <button type="button" title="Story Size 5" class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.L)">L</button>
                     <button type="button" title="Story Size 8" class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.XL)">XL</button>
+                    <button type="button" title="Story Size 13. Needs to be broken up." class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.XXL)">XXL</button>
+                </div>
+            </div>
+            <div class="vote-grp-sm">
+                <div class="d-flex mt-4 mx-auto">
+                    <div class="btn-group mx-auto" role="group" style="width:500px;" aria-label="Voting group">
+                        <button type="button" title="Story Size 1" class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.XS)">XS</button>
+                        <button type="button" title="Story Size 2" class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.S)">S</button>
+                        <button type="button" title="Story Size 3" class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.M)">M</button>
+                    </div>
+                </div>
+                <div class="d-flex mt-4 mx-auto">
+                    <div class="btn-group mx-auto" role="group" style="width:500px;" aria-label="Voting group">
+                        <button type="button" title="Story Size 5" class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.L)">L</button>
+                        <button type="button" title="Story Size 8" class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.XL)">XL</button>
+                        <button type="button" title="Story Size 13. Needs to be broken up." class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.XXL)">XXL</button>
+                    </div>
                 </div>
             </div>
         }

@@ -24,7 +24,6 @@ namespace PokerCardsShared.Pages
 
         private async Task StartTimer(int seconds)
         {
-            Console.WriteLine("WTF");
             TimerState = true;
             while (seconds > 0 && TimerState)
             {
