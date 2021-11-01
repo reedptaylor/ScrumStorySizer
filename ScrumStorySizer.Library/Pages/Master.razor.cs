@@ -38,7 +38,7 @@ namespace ScrumStorySizer.Library.Pages
             }
         }
 
-        protected override void OnInitialized()
+        protected async override Task OnInitializedAsync()
         {
             PokerVote.OnChange += OnUpdate;
         }

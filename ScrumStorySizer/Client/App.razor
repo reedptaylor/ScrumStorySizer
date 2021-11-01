@@ -3,7 +3,9 @@
 
 <Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="true" AdditionalAssemblies="new[] { typeof(ScrumStorySizer.Library.Pages.Master).Assembly }">
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <CascadingValue Name="_messagePopUp" Value="_messagePopUp" TValue="MessagePopUp">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        </CascadingValue>
     </Found>
     <NotFound>
         <LayoutView Layout="@typeof(MainLayout)">
@@ -11,6 +13,7 @@
         </LayoutView>
     </NotFound>
 </Router>
+<MessagePopUp @ref="_messagePopUp" />
 <ConnectionError State="@VotingService.HubConnection.State" />
 
 
@@ -23,6 +26,8 @@
         });
         return Task.CompletedTask;
     }
+
+    MessagePopUp _messagePopUp;
 
     protected override async Task OnInitializedAsync()
     {

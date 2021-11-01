@@ -1,0 +1,25 @@
+@page "/settings"
+
+<div class="card bg-dark">
+    <div class="card-body">
+        <h5 class="card-title">Scrum Master Settings</h5>
+        <hr />
+        <EditForm Model="DevOpsCredential" OnValidSubmit="SubmitCredential">
+            <div class="row">
+                <div class="col">
+                    <label style="width:100%">Username</label>
+                    <input class="form-control" style="max-width:600px;" type="text" @bind-value="DevOpsCredential.Username" />
+                </div>
+                <div class="col">
+                    <label style="width:100%">Access Token (PAT)</label>
+                    <input class="form-control" style="max-width:600px;" type="text" @bind-value="DevOpsCredential.Password" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+</div>
