@@ -17,6 +17,16 @@
             </div>
             <div class="row">
                 <div class="col">
+                    <label style="width:100%">Organization</label>
+                    <input class="form-control" style="max-width:600px;" type="text" @bind-value="DevOpsCredential.Organization" />
+                </div>
+                <div class="col">
+                    <label style="width:100%">Project</label>
+                    <input class="form-control" style="max-width:600px;" type="text" @bind-value="DevOpsCredential.Project" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
                     <button type="submit" class="btn btn-primary">Submit</button>
                 </div>
             </div>

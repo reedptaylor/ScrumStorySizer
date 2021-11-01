@@ -21,11 +21,12 @@ namespace ScrumStorySizer.Library.Pages
 
         private async Task SubmitCredential()
         {
-            using HttpClient client = new HttpClient();
+            using HttpClient client = new();
             IWorkItemClient workItemClient = new DevOpsClient(client, DevOpsCredential);
             try
             {
                 //todo test azure credential
+                await workItemClient.TestAuthentication();
                 string auth = Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(DevOpsCredential));
                 await JSRuntime.InvokeVoidAsync("localStorage.setItem", "devops-auth", auth);
                 _messagePopUp.ShowMessage("Credentials are saved.");

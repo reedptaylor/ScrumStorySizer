@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -15,15 +16,23 @@ namespace ScrumStorySizer.Library.Services
         private readonly HttpClient _httpClient;
         private readonly DevOpsCredential _credential;
 
-        public DevOpsClient(HttpClient httpClient, DevOpsCredential credential)
+        public DevOpsClient(HttpClient httpClient, DevOpsCredential credential) //todo proxy through api
         {
             _httpClient = httpClient;
             _credential = credential;
-            _httpClient.BaseAddress = new Uri($"https://dev.azure.com/{credential.Organization}/{credential.Project}/_apis");
+            _httpClient.BaseAddress = new Uri($"https://dev.azure.com/{credential.Organization}/{credential.Project}/_apis/");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credential.BasicAuth);
         }
 
-        public async Task<WorkItem> GetWorkItem(string auth, string id)
+        public async Task TestAuthentication()
+        {
+            string requestUri = $"wit/workitems?ids=0&api-version=6.0";
+            var workItemResponse = await _httpClient.GetAsync(requestUri);
+            if (!workItemResponse.IsSuccessStatusCode && workItemResponse.StatusCode != HttpStatusCode.BadRequest)
+                throw new UnauthorizedAccessException();
+        }
+
+        public async Task<WorkItem> GetWorkItem(string id)
         {
             WorkItem workItem = new();
             string requestUri = $"wit/workitems/{id}?api-version=6.0";
@@ -48,9 +57,9 @@ namespace ScrumStorySizer.Library.Services
             return workItem;
         }
 
-        public async Task SizeWorkItem(string auth, string id, int size)
+        public async Task SizeWorkItem(string id, int size)
         {
-            WorkItem workItem = await GetWorkItem(auth, id);
+            WorkItem workItem = await GetWorkItem(id);
             List<string> tags = new List<string>() { "Planning" };
             tags.AddRange(workItem?.Tags?.Where(tag => tag != "Ready2Groom"));
             string tagList = string.Join(';', tags);

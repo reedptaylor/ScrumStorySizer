@@ -7,9 +7,11 @@ namespace ScrumStorySizer.Library.Services
 {
     public interface IWorkItemClient
     {
-        public Task<WorkItem> GetWorkItem(string auth, string id);
+        Task TestAuthentication();
 
-        public Task SizeWorkItem(string auth, string id, int size);
+        Task<WorkItem> GetWorkItem(string id);
+
+        Task SizeWorkItem(string id, int size);
     }
 
     public class WorkItemClientException : Exception
