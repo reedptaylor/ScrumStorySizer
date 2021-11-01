@@ -16,7 +16,7 @@ namespace ScrumStorySizer.Client
 
             builder.Services.AddScoped(sp => new HttpClient() { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-            builder.Services.AddSingleton<IVotingService, VotingServiceWA>();
+            builder.Services.AddSingleton<IVotingService, VotingService>();
 
             await builder.Build().RunAsync();
         }

@@ -1,14 +1,70 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR.Client;
 using ScrumStorySizer.Library.Models;
+using Microsoft.AspNetCore.SignalR.Client;
+using Microsoft.AspNetCore.Components;
+using System.Threading.Tasks;
 
 namespace ScrumStorySizer.Library.Services
 {
     public class VotingService : IVotingService
     {
-        public HubConnection HubConnection => null;
+        public HubConnection HubConnection { get; private set; }
+
+        public VotingService(NavigationManager navigationManager)
+        {
+            HubConnection = new HubConnectionBuilder()
+                .WithUrl(navigationManager.ToAbsoluteUri("/voteHub"))
+                .Build();
+
+            HubConnection.On<SizeVote>("ReceiveAddStorySizeVotes", (vote) =>
+            {
+                StorySizeVotes.RemoveAll(item => item.User == vote.User);
+                StorySizeVotes.Add(vote);
+                NotifyDataChanged();
+            });
+
+            HubConnection.On("ReceiveClearStorySizeVotes", () =>
+            {
+                StorySizeVotes.Clear();
+                ShowVotes = false;
+                NotifyDataChanged();
+            });
+
+            HubConnection.On("ReceiveRevealVotes", () =>
+            {
+                ShowVotes = true;
+                TimeLeft = 0;
+                NotifyDataChanged();
+            });
+
+            HubConnection.On<string>("ReceiveUpdateStoryName", (name) =>
+            {
+                StoryName = name;
+                TimeLeft = 0;
+                NotifyDataChanged();
+            });
+
+            HubConnection.On<string, List<SizeVote>, bool>("ReceiveCache", (storyName, storySizeVotes, showVotes) =>
+            {
+                StoryName = storyName;
+                StorySizeVotes = storySizeVotes;
+                ShowVotes = showVotes;
+                NotifyDataChanged();
+            });
+
+            HubConnection.On<int>("TimeRemaining", (seconds) =>
+            {
+                TimeLeft = seconds;
+                NotifyDataChanged();
+            });
+
+            HubConnection.On("CancelTimer", () =>
+            {
+                TimeLeft = 0;
+                NotifyDataChanged();
+            });
+        }
 
         public string StoryName { get; set; }
 
@@ -16,49 +72,43 @@ namespace ScrumStorySizer.Library.Services
 
         public bool ShowVotes { get; private set; }
 
-        public int TimeLeft => 0;
+        public int TimeLeft { get; set; } = 0;
 
         public event Action OnChange;
 
         public void AddStorySizeVotes(SizeVote vote)
         {
-            StorySizeVotes.RemoveAll(item => item.User == vote.User);
-            StorySizeVotes.Add(vote);
-            NotifyDataChanged();
+            HubConnection.SendAsync("AddStorySizeVotes", vote);
         }
 
         public void ClearStorySizeVotes()
         {
-            StorySizeVotes.Clear();
-            ShowVotes = false;
-            NotifyDataChanged();
-        }
-
-        public void UpdateStoryName(string name)
-        {
-            StoryName = name;
-            NotifyDataChanged();
+            HubConnection.SendAsync("ClearStorySizeVotes");
         }
 
         public void RevealVotes()
         {
-            ShowVotes = true;
-            NotifyDataChanged();
+            HubConnection.SendAsync("RevealVotes");
         }
 
-        public void NotifyDataChanged()
+        public void UpdateStoryName(string name)
         {
-            OnChange?.Invoke();
+            HubConnection.SendAsync("UpdateStoryName", name);
         }
 
         public void TimeRemaining(int seconds)
         {
-            return;
+            HubConnection.SendAsync("TimeRemaining", seconds);
         }
 
         public void CancelTimer()
         {
-            return;
+            HubConnection.SendAsync("CancelTimer");
+        }
+
+        private void NotifyDataChanged()
+        {
+            OnChange?.Invoke();
         }
     }
 }
