@@ -34,6 +34,9 @@ namespace ScrumStorySizer.Server
                     new[] { "application/octet-stream" });
             });
 
+            services.AddReverseProxy()
+                .LoadFromConfig(Configuration.GetSection("ReverseProxy"));
+
             services.AddSingleton<CacheService>();
         }
 
@@ -63,6 +66,7 @@ namespace ScrumStorySizer.Server
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
                 endpoints.MapHub<VoteHub>("/votehub");
+                endpoints.MapReverseProxy();
                 endpoints.MapFallbackToFile("index.html");
             });
         }

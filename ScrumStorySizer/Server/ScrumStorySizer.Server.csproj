@@ -5,7 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.12" />
+    <PackageReference Include="Yarp.ReverseProxy" Version="1.0.0-rc.1.21520.4" />
   </ItemGroup>
 
   <ItemGroup>

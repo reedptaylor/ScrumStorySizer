@@ -16,13 +16,13 @@ namespace ScrumStorySizer.Library.Pages
         [CascadingParameter(Name = "_messagePopUp")] public MessagePopUp _messagePopUp { get; set; }
 
         [Inject] protected IJSRuntime JSRuntime { get; set; }
+        [Inject] protected HttpClient HttpClient { get; set; }
 
         public DevOpsCredential DevOpsCredential { get; set; } = new DevOpsCredential();
 
         private async Task SubmitCredential()
         {
-            using HttpClient client = new();
-            IWorkItemClient workItemClient = new DevOpsClient(client, DevOpsCredential);
+            IWorkItemClient workItemClient = new DevOpsClient(HttpClient, DevOpsCredential);
             try
             {
                 //todo test azure credential

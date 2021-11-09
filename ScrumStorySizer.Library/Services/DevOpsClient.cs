@@ -20,7 +20,10 @@ namespace ScrumStorySizer.Library.Services
         {
             _httpClient = httpClient;
             _credential = credential;
-            _httpClient.BaseAddress = new Uri($"https://dev.azure.com/{credential.Organization}/{credential.Project}/_apis/");
+
+            var basePath = _httpClient.BaseAddress.GetComponents(UriComponents.SchemeAndServer, UriFormat.Unescaped);
+            
+            _httpClient.BaseAddress = new Uri($"{basePath}/devops/{credential.Organization}/{credential.Project}/_apis/");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credential.BasicAuth);
         }
 
