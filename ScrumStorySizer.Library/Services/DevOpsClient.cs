@@ -48,13 +48,13 @@ namespace ScrumStorySizer.Library.Services
 
             workItem.Id = id;
             fields.TryGetProperty("System.Title", out JsonElement titleElement);
-            workItem.Title = titleElement.GetString() ?? string.Empty;
+            workItem.Title = GetJsonValue(titleElement);
             fields.TryGetProperty("System.Description", out JsonElement descriptionElement);
-            workItem.Description = descriptionElement.GetString() ?? string.Empty;
+            workItem.Description = GetJsonValue(descriptionElement);
             fields.TryGetProperty("Microsoft.VSTS.Common.AcceptanceCriteria", out JsonElement criteriaElement);
-            workItem.AcceptanceCriteria = criteriaElement.GetString() ?? string.Empty;
+            workItem.AcceptanceCriteria = GetJsonValue(criteriaElement);
             fields.TryGetProperty("System.Tags", out JsonElement tagsElement);
-            workItem.Tags = tagsElement.GetString()?.Split(";") ?? Array.Empty<string>();
+            workItem.Tags = GetJsonValue(tagsElement).Split(";") ?? Array.Empty<string>();
 
             return workItem;
         }
@@ -79,6 +79,14 @@ namespace ScrumStorySizer.Library.Services
             string rawResponse = await workItemResponse.Content.ReadAsStringAsync();
             if (!workItemResponse.IsSuccessStatusCode)
                 throw new WorkItemClientException(rawResponse);
+        }
+
+        private string GetJsonValue(JsonElement element)
+        {
+            if (element.ValueKind == JsonValueKind.String || element.ValueKind == JsonValueKind.Null)
+                return element.GetString() ?? string.Empty;
+            else
+                return string.Empty;
         }
     }
 }

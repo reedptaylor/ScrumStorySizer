@@ -1,3 +1,4 @@
+using System.Net.Http;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using ScrumStorySizer.Library.Models;
@@ -12,7 +13,8 @@ namespace ScrumStorySizer.Library.Pages
     public partial class Master : IDisposable
     {
         [Inject] protected IJSRuntime JSRuntime { get; set; }
-        [Inject] IVotingService PokerVote { get; set; }
+        [Inject] protected NavigationManager NavigationManager { get; set; }
+        [Inject] protected IVotingService PokerVote { get; set; }
 
         private DevOpsCredential DevOpsCredential { get; set; } = new();
 
@@ -27,6 +29,14 @@ namespace ScrumStorySizer.Library.Pages
         private string StoryName { get; set; }
 
         private bool TimerState { get; set; }
+
+        private async Task<string> GetStoryName(string id)
+        {
+            using HttpClient httpClient = new();
+            DevOpsClient devOpsClient = new(httpClient, NavigationManager, DevOpsCredential);
+            WorkItem workItem = await devOpsClient.GetWorkItem(id);
+            return workItem.Title;
+        }
 
         private async Task StartTimer(int seconds)
         {
