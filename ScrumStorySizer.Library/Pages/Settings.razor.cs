@@ -18,7 +18,8 @@ namespace ScrumStorySizer.Library.Pages
         [Inject] protected IJSRuntime JSRuntime { get; set; }
         [Inject] protected NavigationManager NavigationManager { get; set; }
 
-        public DevOpsCredential DevOpsCredential { get; set; } = new DevOpsCredential();
+        public DevOpsCredential DevOpsCredential { get; set; } = new();
+        public TeamMemberSettings TeamMemberSettings { get; set; } = new();
 
         private bool showCredential = false;
 
@@ -58,15 +59,39 @@ namespace ScrumStorySizer.Library.Pages
             }
         }
 
+        private async Task SaveTeamMemberSettings()
+        {
+            try
+            {
+                string json = Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(TeamMemberSettings));
+                await JSRuntime.InvokeVoidAsync("localStorage.setItem", "team-member-settings", json);
+                _messagePopUp.ShowMessage("Settings are saved.");
+            }
+            catch
+            {
+                _messagePopUp.ShowMessage("Settings are invalid.");
+            }
+        }
+
         protected async override Task OnInitializedAsync()
         {
-            string auth = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "devops-auth");
-            if (!string.IsNullOrWhiteSpace(auth))
+            string scrumMasterSettings = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "devops-auth");
+            string teamMemberSettings = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "team-member-settings");
+            if (!string.IsNullOrWhiteSpace(scrumMasterSettings))
             {
                 try
                 {
-                    auth = Encoding.UTF8.GetString(Convert.FromBase64String(auth));
-                    DevOpsCredential = JsonSerializer.Deserialize<DevOpsCredential>(auth) ?? new();
+                    scrumMasterSettings = Encoding.UTF8.GetString(Convert.FromBase64String(scrumMasterSettings));
+                    DevOpsCredential = JsonSerializer.Deserialize<DevOpsCredential>(scrumMasterSettings) ?? new();
+                }
+                catch { }
+            }
+            if (!string.IsNullOrWhiteSpace(teamMemberSettings))
+            {
+                try
+                {
+                    teamMemberSettings = Encoding.UTF8.GetString(Convert.FromBase64String(teamMemberSettings));
+                    TeamMemberSettings = JsonSerializer.Deserialize<TeamMemberSettings>(teamMemberSettings) ?? new();
                 }
                 catch { }
             }
