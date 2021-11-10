@@ -14,6 +14,8 @@ namespace ScrumStorySizer.Library.Models
 
         public string Project { get; set; }
 
+        public bool IsEnabled { get; set; }
+
         [JsonIgnore]
         public string BasicAuth => Convert.ToBase64String(Encoding.UTF8.GetBytes($"{Username}:{Password}"));
     }

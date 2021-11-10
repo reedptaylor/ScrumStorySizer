@@ -5,24 +5,35 @@
         <h5 class="card-title">Scrum Master Settings</h5>
         <hr />
         <EditForm Model="DevOpsCredential" OnValidSubmit="SubmitCredential">
+            <div class="d-flex">
+                <h5>Azure DevOps Integration</h5>
+                <label class="switch ml-3">
+                    <input type="checkbox" @bind-value="DevOpsCredential.IsEnabled">
+                    <span class="slider round"></span>
+                </label>
+            </div>
             <div class="row">
                 <div class="col">
                     <label style="width:100%">Username</label>
-                    <input class="form-control" style="max-width:600px;" type="text" @bind-value="DevOpsCredential.Username" />
+                    <input class="form-control" style="max-width:600px;" type="text"
+                        @bind-value="DevOpsCredential.Username" />
                 </div>
                 <div class="col">
                     <label style="width:100%">Access Token (PAT)</label>
-                    <input class="form-control" style="max-width:600px;" type="text" @bind-value="DevOpsCredential.Password" />
+                    <input class="form-control" style="max-width:600px;" type="@(showCredential ? "text" : "password")"
+                        @bind-value="DevOpsCredential.Password" />
                 </div>
             </div>
             <div class="row">
                 <div class="col">
                     <label style="width:100%">Organization</label>
-                    <input class="form-control" style="max-width:600px;" type="text" @bind-value="DevOpsCredential.Organization" />
+                    <input class="form-control" style="max-width:600px;" type="text"
+                        @bind-value="DevOpsCredential.Organization" />
                 </div>
                 <div class="col">
                     <label style="width:100%">Project</label>
-                    <input class="form-control" style="max-width:600px;" type="text" @bind-value="DevOpsCredential.Project" />
+                    <input class="form-control" style="max-width:600px;" type="text"
+                        @bind-value="DevOpsCredential.Project" />
                 </div>
             </div>
             <div class="row">

@@ -19,6 +19,8 @@ namespace ScrumStorySizer.Library.Pages
         [Inject] protected HttpClient HttpClient { get; set; }
 
         public DevOpsCredential DevOpsCredential { get; set; } = new DevOpsCredential();
+        
+        private bool showCredential = false;
 
         private async Task SubmitCredential()
         {
@@ -45,7 +47,7 @@ namespace ScrumStorySizer.Library.Pages
                 try
                 {
                     auth = Encoding.UTF8.GetString(Convert.FromBase64String(auth));
-                    DevOpsCredential = JsonSerializer.Deserialize<DevOpsCredential>(auth);
+                    DevOpsCredential = JsonSerializer.Deserialize<DevOpsCredential>(auth) ?? new();
                 }
                 catch { }
             }
