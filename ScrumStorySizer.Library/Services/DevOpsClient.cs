@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components;
 
 namespace ScrumStorySizer.Library.Services
 {
@@ -16,14 +17,12 @@ namespace ScrumStorySizer.Library.Services
         private readonly HttpClient _httpClient;
         private readonly DevOpsCredential _credential;
 
-        public DevOpsClient(HttpClient httpClient, DevOpsCredential credential) //todo proxy through api
+        public DevOpsClient(HttpClient httpClient, NavigationManager navigationManager, DevOpsCredential credential) //todo proxy through api
         {
             _httpClient = httpClient;
             _credential = credential;
-
-            var basePath = _httpClient.BaseAddress.GetComponents(UriComponents.SchemeAndServer, UriFormat.Unescaped);
             
-            _httpClient.BaseAddress = new Uri($"{basePath}/devops/{credential.Organization}/{credential.Project}/_apis/");
+            _httpClient.BaseAddress = new Uri($"{navigationManager.BaseUri}devops/{credential.Organization}/{credential.Project}/_apis/");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credential.BasicAuth);
         }
 

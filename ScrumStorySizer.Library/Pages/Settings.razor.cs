@@ -16,21 +16,40 @@ namespace ScrumStorySizer.Library.Pages
         [CascadingParameter(Name = "_messagePopUp")] public MessagePopUp _messagePopUp { get; set; }
 
         [Inject] protected IJSRuntime JSRuntime { get; set; }
-        [Inject] protected HttpClient HttpClient { get; set; }
+        [Inject] protected NavigationManager NavigationManager { get; set; }
 
         public DevOpsCredential DevOpsCredential { get; set; } = new DevOpsCredential();
-        
+
         private bool showCredential = false;
+
+        private async Task SaveCredential()
+        {
+            string auth = Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(DevOpsCredential));
+            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "devops-auth", auth);
+        }
+
+        private async Task SetEnabled(bool value)
+        {
+            DevOpsCredential.IsEnabled = value;
+            if (!DevOpsCredential.IsEnabled)
+            {
+                await SaveCredential();
+            }
+            else if (!string.IsNullOrWhiteSpace(DevOpsCredential.Username) && !string.IsNullOrWhiteSpace(DevOpsCredential.Password)
+                && !string.IsNullOrWhiteSpace(DevOpsCredential.Organization) && !string.IsNullOrWhiteSpace(DevOpsCredential.Project))
+            {
+                await SubmitCredential();
+            }
+        }
 
         private async Task SubmitCredential()
         {
-            IWorkItemClient workItemClient = new DevOpsClient(HttpClient, DevOpsCredential);
+            using var httpClient = new HttpClient();
+            IWorkItemClient workItemClient = new DevOpsClient(httpClient, NavigationManager, DevOpsCredential);
             try
             {
-                //todo test azure credential
                 await workItemClient.TestAuthentication();
-                string auth = Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(DevOpsCredential));
-                await JSRuntime.InvokeVoidAsync("localStorage.setItem", "devops-auth", auth);
+                await SaveCredential();
                 _messagePopUp.ShowMessage("Credentials are saved.");
             }
             catch

@@ -15,6 +15,7 @@ namespace ScrumStorySizer.Library.Services
         {
             HubConnection = new HubConnectionBuilder()
                 .WithUrl(navigationManager.ToAbsoluteUri("/voteHub"))
+                .WithAutomaticReconnect()
                 .Build();
 
             HubConnection.On<SizeVote>("ReceiveAddStorySizeVotes", (vote) =>

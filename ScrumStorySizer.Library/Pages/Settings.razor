@@ -8,37 +8,46 @@
             <div class="d-flex">
                 <h5>Azure DevOps Integration</h5>
                 <label class="switch ml-3">
-                    <input type="checkbox" @bind-value="DevOpsCredential.IsEnabled">
+                    <InputCheckbox type="checkbox" Value="DevOpsCredential.IsEnabled"
+                        ValueExpression="() => DevOpsCredential.IsEnabled" ValueChanged="SetEnabled" />
                     <span class="slider round"></span>
                 </label>
             </div>
             <div class="row">
                 <div class="col">
-                    <label style="width:100%">Username</label>
-                    <input class="form-control" style="max-width:600px;" type="text"
-                        @bind-value="DevOpsCredential.Username" />
+                    <label style="width:100%" for="DevOpsCredential.Organization">Organization</label>
+                    <input class="form-control" style="max-width:600px;" type="text" id="DevOpsCredential.Organization"
+                        disabled="@(!DevOpsCredential.IsEnabled)" @bind-value="DevOpsCredential.Organization" />
                 </div>
                 <div class="col">
-                    <label style="width:100%">Access Token (PAT)</label>
-                    <input class="form-control" style="max-width:600px;" type="@(showCredential ? "text" : "password")"
-                        @bind-value="DevOpsCredential.Password" />
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <label style="width:100%">Organization</label>
-                    <input class="form-control" style="max-width:600px;" type="text"
-                        @bind-value="DevOpsCredential.Organization" />
-                </div>
-                <div class="col">
-                    <label style="width:100%">Project</label>
-                    <input class="form-control" style="max-width:600px;" type="text"
-                        @bind-value="DevOpsCredential.Project" />
+                    <label style="width:100%" for="DevOpsCredential.Project">Project</label>
+                    <input class="form-control" style="max-width:600px;" type="text" id="DevOpsCredential.Project"
+                        disabled="@(!DevOpsCredential.IsEnabled)" @bind-value="DevOpsCredential.Project" />
                 </div>
             </div>
             <div class="row">
                 <div class="col">
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <label style="width:100%" for="DevOpsCredential.Username">Username</label>
+                    <input class="form-control" style="max-width:600px;" type="text" id="DevOpsCredential.Username"
+                        disabled="@(!DevOpsCredential.IsEnabled)" @bind-value="DevOpsCredential.Username" />
+                </div>
+                <div class="col">
+                    <div class="d-flex">
+                        <label for="DevOpsCredential.Password">Access Token (PAT)</label>
+                        <div class="ml-auto">
+                            <label style="font-size:12px" for="showCredential">Reveal?</label>
+                            <InputCheckbox type="checkbox" Value="showCredential" ValueExpression="() => showCredential" id="showCredential"
+                                ValueChanged="() => showCredential = !showCredential" />
+                        </div>
+                    </div>
+                    <input class="form-control" style="max-width:600px;" type="@(showCredential ? "text" : "password")" id="DevOpsCredential.Password"
+                        disabled="@(!DevOpsCredential.IsEnabled)" @bind-value="DevOpsCredential.Password" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button type="submit" class="btn btn-primary mt-3"
+                        disabled="@(!DevOpsCredential.IsEnabled)">Save</button>
                 </div>
             </div>
         </EditForm>
