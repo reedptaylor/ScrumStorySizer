@@ -21,11 +21,12 @@ namespace ScrumStorySizer.Library.Components
             PokerVote.UpdateWorkItem(new WorkItem() { Title = e.Value.ToString() });
         }
 
-        private void ReconcileStoryName() // TODO story syncing still doesnt work
+        private void ReconcileStoryName()
         {
             _serverStoryName = PokerVote.WorkItem.Title;
             if (!_titleFocus)
                 _storyName = _serverStoryName;
+            OnUpdate();
         }
 
         protected override void OnInitialized()

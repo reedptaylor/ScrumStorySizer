@@ -3,7 +3,7 @@
 <div class="row">
     <div class="col">
         <label style="width:100%">Story Name</label>
-        <input autofocus class="form-control" style="max-width:600px;" type="text" value="@_storyName" @oninput="UpdateStoryName" @onfocusin="() => _titleFocus = true" @onfocusout="() => { _titleFocus = true; ReconcileStoryName(); }" />
+        <input autofocus class="form-control" style="max-width:600px;" type="text" value="@_storyName" @oninput="UpdateStoryName" @onfocusin="() => _titleFocus = true" @onfocusout="() => { _titleFocus = false; ReconcileStoryName(); }" />
     </div>
 </div>
 <div class="mt-4 d-flex">
