@@ -21,7 +21,7 @@ namespace ScrumStorySizer.Library.Services
         {
             _httpClient = httpClient;
             _credential = credential;
-            
+
             _httpClient.BaseAddress = new Uri($"{navigationManager.BaseUri}devops/{credential.Organization}/{credential.Project}/_apis/");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credential.BasicAuth);
         }
@@ -41,7 +41,10 @@ namespace ScrumStorySizer.Library.Services
             var workItemResponse = await _httpClient.GetAsync(requestUri);
             string rawResponse = await workItemResponse.Content.ReadAsStringAsync();
             if (!workItemResponse.IsSuccessStatusCode)
-                throw new WorkItemClientException(rawResponse);
+            {
+                throw (workItemResponse.StatusCode == HttpStatusCode.Unauthorized || workItemResponse.StatusCode == HttpStatusCode.Forbidden)
+                    ? new UnauthorizedAccessException(rawResponse) : new WorkItemClientException(rawResponse);
+            }
 
             var doc = JsonDocument.Parse(rawResponse);
             var fields = doc.RootElement.GetProperty("fields");
@@ -65,7 +68,7 @@ namespace ScrumStorySizer.Library.Services
             List<string> tags = new List<string>() { "Planning" };
             tags.AddRange(workItem?.Tags?.Where(tag => tag != "Ready2Groom"));
             string tagList = string.Join(';', tags);
-            
+
             string requestUri = $"wit/workitems/{id}?api-version=6.0";
             var request = new[]
             {
@@ -78,7 +81,10 @@ namespace ScrumStorySizer.Library.Services
             var workItemResponse = await _httpClient.PatchAsync(requestUri, new StringContent(requestBody, Encoding.UTF8, "application/json"));
             string rawResponse = await workItemResponse.Content.ReadAsStringAsync();
             if (!workItemResponse.IsSuccessStatusCode)
-                throw new WorkItemClientException(rawResponse);
+            {
+                throw (workItemResponse.StatusCode == HttpStatusCode.Unauthorized || workItemResponse.StatusCode == HttpStatusCode.Forbidden)
+                    ? new UnauthorizedAccessException(rawResponse) : new WorkItemClientException(rawResponse);
+            }
         }
 
         private string GetJsonValue(JsonElement element)

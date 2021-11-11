@@ -9,7 +9,7 @@ namespace ScrumStorySizer.Library.Components
 {
     public class StoryBase : ComponentBase, IDisposable
     {
-        [Inject] private IJSRuntime JSRuntime { get; set; }
+        [Inject] protected IJSRuntime JSRuntime { get; set; }
         [Inject] protected IVotingService PokerVote { get; set; }
 
         protected bool ShowResultsDisabled
@@ -63,7 +63,7 @@ namespace ScrumStorySizer.Library.Components
             TimerActive = false;
         }
 
-        protected void NewStory()
+        protected virtual void NewStory()
         {
             ClearVotes();
             UpdateWorkItem(new WorkItem());

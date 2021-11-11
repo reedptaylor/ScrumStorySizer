@@ -1,12 +1,5 @@
-using System.Net.Http;
 using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using ScrumStorySizer.Library.Models;
-using ScrumStorySizer.Library.Services;
-using System;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace ScrumStorySizer.Library.Components
 {
@@ -23,7 +16,7 @@ namespace ScrumStorySizer.Library.Components
 
         private void ReconcileStoryName()
         {
-            _serverStoryName = PokerVote.WorkItem.Title;
+            _serverStoryName = PokerVote.WorkItem?.Title;
             if (!_titleFocus)
                 _storyName = _serverStoryName;
             OnUpdate();
@@ -32,8 +25,8 @@ namespace ScrumStorySizer.Library.Components
         protected override void OnInitialized()
         {
             PokerVote.OnChange += ReconcileStoryName;
-            _storyName = PokerVote.WorkItem.Title;
-            _serverStoryName = PokerVote.WorkItem.Title;
+            _storyName = PokerVote.WorkItem?.Title;
+            _serverStoryName = PokerVote.WorkItem?.Title;
         }
 
         public override void Dispose()

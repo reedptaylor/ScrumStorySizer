@@ -4,9 +4,9 @@
     <div class="card-body">
         <h5 class="card-title">Scrum Master</h5>
         <hr />
-        @if (DevOpsCredential is null)
+        @if (DevOpsCredential?.IsEnabled == true)
         {
-            <StandardStory />
+            <DevOpsStory DevOpsCredential="DevOpsCredential" />
         }
         else
         {

@@ -94,6 +94,7 @@ namespace ScrumStorySizer.Library.Services
 
         public void UpdateWorkItem(WorkItem workItem)
         {
+            if (workItem is null) workItem = new();
             HubConnection.SendAsync("UpdateWorkItem", workItem);
         }
 

@@ -28,6 +28,7 @@ namespace ScrumStorySizer.Library.Pages
                 {
                     scrumMasterSettings = Encoding.UTF8.GetString(Convert.FromBase64String(scrumMasterSettings));
                     DevOpsCredential = JsonSerializer.Deserialize<DevOpsCredential>(scrumMasterSettings);
+                    OnUpdate();
                 }
                 catch { }
             }
