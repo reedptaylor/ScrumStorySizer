@@ -27,6 +27,12 @@
         return Task.CompletedTask;
     }
 
+    private async Task OnReconnect()
+    {
+        await VotingService.HubConnection.SendAsync("NewConnection");
+        await OnUpdate();
+    }
+
     MessagePopUp _messagePopUp;
 
     protected override async Task OnInitializedAsync()
@@ -38,7 +44,7 @@
         }
 
         VotingService.HubConnection.Closed += (_) => OnUpdate();
-        VotingService.HubConnection.Reconnected += (_) => OnUpdate();
+        VotingService.HubConnection.Reconnected += (_) => OnReconnect();
         VotingService.HubConnection.Reconnecting += (_) => OnUpdate();
     }
 }

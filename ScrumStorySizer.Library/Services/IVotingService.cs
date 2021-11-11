@@ -8,17 +8,17 @@ namespace ScrumStorySizer.Library.Services
 {
     public interface IVotingService
     {
-        public HubConnection HubConnection { get; }
-        public string StoryName { get; set; }
-        public List<SizeVote> StorySizeVotes { get; }
-        public bool ShowVotes { get; }
-        public int TimeLeft { get; }
-        public event Action OnChange;
-        public void AddStorySizeVotes(SizeVote vote);
-        public void ClearStorySizeVotes();
-        public void UpdateStoryName(string name);
-        public void RevealVotes();
-        public void TimeRemaining(int seconds);
-        public void CancelTimer();
+        HubConnection HubConnection { get; }
+        WorkItem WorkItem { get; set; }
+        List<SizeVote> StorySizeVotes { get; }
+        bool ShowVotes { get; }
+        int TimeLeft { get; }
+        event Action OnChange;
+        void AddStorySizeVotes(SizeVote vote);
+        void ClearStorySizeVotes();
+        void UpdateWorkItem(WorkItem workItem);
+        void RevealVotes();
+        void TimeRemaining(int seconds);
+        void CancelTimer();
     }
 }

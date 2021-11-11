@@ -29,15 +29,17 @@ namespace ScrumStorySizer.Library.Pages
 
         private string Username { get; set; }
 
-        private bool VoteDisabled
-        {
-            get
-            {
-                return string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(PokerVote.StoryName);
-            }
-        }
+        private bool VoteDisabled => string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(PokerVote.WorkItem?.Title);
 
         private bool ChangeVote { get; set; } = false;
+
+        void OnUpdate()
+        {
+            InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
+        }
 
         protected async override Task OnInitializedAsync()
         {
@@ -57,14 +59,6 @@ namespace ScrumStorySizer.Library.Pages
         public void Dispose()
         {
             PokerVote.OnChange -= OnUpdate;
-        }
-
-        void OnUpdate()
-        {
-            InvokeAsync(() =>
-            {
-                StateHasChanged();
-            });
         }
     }
 }

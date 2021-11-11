@@ -6,7 +6,7 @@ namespace ScrumStorySizer.Server
 {
     public class CacheService
     {
-        public string StoryName { get; set; }
+        public WorkItem WorkItem { get; set; }
 
         public List<SizeVote> StorySizeVotes { get; set; } = new List<SizeVote>();
 

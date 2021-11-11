@@ -17,7 +17,7 @@ namespace ScrumStorySizer.Library.Services
         private readonly HttpClient _httpClient;
         private readonly DevOpsCredential _credential;
 
-        public DevOpsClient(HttpClient httpClient, NavigationManager navigationManager, DevOpsCredential credential) //todo proxy through api
+        public DevOpsClient(HttpClient httpClient, NavigationManager navigationManager, DevOpsCredential credential)
         {
             _httpClient = httpClient;
             _credential = credential;

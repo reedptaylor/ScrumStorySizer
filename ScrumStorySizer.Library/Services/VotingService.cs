@@ -39,16 +39,16 @@ namespace ScrumStorySizer.Library.Services
                 NotifyDataChanged();
             });
 
-            HubConnection.On<string>("ReceiveUpdateStoryName", (name) =>
+            HubConnection.On<WorkItem>("ReceiveUpdateWorkItem", (workItem) =>
             {
-                StoryName = name;
+                WorkItem = workItem;
                 TimeLeft = 0;
                 NotifyDataChanged();
             });
 
-            HubConnection.On<string, List<SizeVote>, bool>("ReceiveCache", (storyName, storySizeVotes, showVotes) =>
+            HubConnection.On<WorkItem, List<SizeVote>, bool>("ReceiveCache", (workItem, storySizeVotes, showVotes) =>
             {
-                StoryName = storyName;
+                WorkItem = workItem;
                 StorySizeVotes = storySizeVotes;
                 ShowVotes = showVotes;
                 NotifyDataChanged();
@@ -67,7 +67,7 @@ namespace ScrumStorySizer.Library.Services
             });
         }
 
-        public string StoryName { get; set; }
+        public WorkItem WorkItem { get; set; } = new WorkItem();
 
         public List<SizeVote> StorySizeVotes { get; private set; } = new List<SizeVote>();
 
@@ -92,9 +92,9 @@ namespace ScrumStorySizer.Library.Services
             HubConnection.SendAsync("RevealVotes");
         }
 
-        public void UpdateStoryName(string name)
+        public void UpdateWorkItem(WorkItem workItem)
         {
-            HubConnection.SendAsync("UpdateStoryName", name);
+            HubConnection.SendAsync("UpdateWorkItem", workItem);
         }
 
         public void TimeRemaining(int seconds)

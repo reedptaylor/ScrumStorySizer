@@ -34,15 +34,15 @@ namespace ScrumStorySizer.Server.Hubs
             await Clients.All.SendAsync("ReceiveRevealVotes");
         }
 
-        public async Task UpdateStoryName(string name)
+        public async Task UpdateWorkItem(WorkItem workItem)
         {
-            _cacheService.StoryName = name;
-            await Clients.All.SendAsync("ReceiveUpdateStoryName", name);
+            _cacheService.WorkItem = workItem;
+            await Clients.All.SendAsync("ReceiveUpdateWorkItem", workItem);
         }
 
         public async Task NewConnection()
         {
-            await Clients.Caller.SendAsync("ReceiveCache", _cacheService.StoryName, _cacheService.StorySizeVotes, _cacheService.ShowVotes);
+            await Clients.Caller.SendAsync("ReceiveCache", _cacheService.WorkItem, _cacheService.StorySizeVotes, _cacheService.ShowVotes);
         }
 
         public async Task CancelTimer()

@@ -4,45 +4,14 @@
     <div class="card-body">
         <h5 class="card-title">Scrum Master</h5>
         <hr />
-        <div class="row">
-            <div class="col">
-                @if (DevOpsCredential.IsEnabled)
-                {
-                    <label style="width:100%">PBI ID</label>
-                    <input autofocus class="form-control" style="max-width:600px;" type="text"
-                    @onchange="async (e) => { PokerVote.UpdateStoryName(await GetStoryName(e.Value.ToString())); TimerState = false; }" />
-                }
-                else
-                {
-                    <label style="width:100%">Story Name</label>
-                    <input autofocus class="form-control" style="max-width:600px;" type="text"
-                    @oninput="(e) => { PokerVote.UpdateStoryName(e.Value.ToString()); TimerState = false; }" />
-                }
-            </div>
-
-        </div>
-        <div class="mt-4 d-flex">
-            <div class="btn-group" role="group" style="width:680px;" aria-label="Admin group">
-                <button type="button" class="btn btn-primary btn-admin" disabled="@ShowResultsDisabled"
-                    @onclick="() => { PokerVote.RevealVotes(); TimerState = false; }">Show Results</button>
-                @if (PokerVote.TimeLeft > 0)
-                {
-                    <button type="button" class="btn btn-primary btn-admin"
-                    @onclick="() => { PokerVote.CancelTimer(); TimerState = false; }">Cancel Timer
-                        (@PokerVote.TimeLeft)</button>
-                }
-                else
-                {
-                    <button type="button" title="Start 10 second timer." class="btn btn-primary btn-admin"
-                    disabled="@ShowResultsDisabled" @onclick="async () => await StartTimer(10)">Start Timer</button>
-                }
-                <button type="button" class="btn btn-primary btn-admin"
-                    @onclick="() => PokerVote.ClearStorySizeVotes()">Clear Votes</button>
-                <button type="button" class="btn btn-primary btn-admin"
-                    @onclick='() => { PokerVote.UpdateStoryName(""); PokerVote.ClearStorySizeVotes();  StoryName = ""; }'>New
-                    Story</button>
-            </div>
-        </div>
+        @if (DevOpsCredential is null)
+        {
+            <StandardStory />
+        }
+        else
+        {
+            <StandardStory />
+        }
     </div>
 </div>
 
