@@ -1,29 +1,7 @@
-@inherits StoryBase
-
 <div class="row">
-    <div class="col-lg-3 col">
+    <div class="col-md-4 col-lg-3 col">
         <label style="width:100%" id="work-item-id">Work Item ID</label>
         <input autofocus class="form-control" style="max-width:600px;" type="text" @onfocusout="GetWorkItem"
             @onkeydown="IdKeyDown" @bind-value="_workItemId" @bind-value:event="oninput" for="work-item-id" @ref="_workItemIdInput" />
-    </div>
-</div>
-<div class="mt-4 d-flex">
-    <div class="btn-group" role="group" style="width:680px;" aria-label="Admin group">
-        <button type="button" class="btn btn-primary btn-admin" disabled="@ShowResultsDisabled"
-            @onclick="RevealVotes">Show Results</button>
-        @if (PokerVote.TimeLeft > 0)
-        {
-            <button type="button" class="btn btn-primary btn-admin" @onclick="CancelTimer">Cancel Timer
-                (@PokerVote.TimeLeft)</button>
-        }
-        else
-        {
-            <button type="button" title="Start 10 second timer." class="btn btn-primary btn-admin"
-            disabled="@ShowResultsDisabled" @onclick="() => StartTimer(10)">Start Timer</button>
-        }
-        <button type="button" class="btn btn-primary btn-admin" @onclick="ClearVotes">Clear
-            Votes</button>
-        <button type="button" class="btn btn-primary btn-admin" @onclick="NewStory">New
-            Story</button>
     </div>
 </div>

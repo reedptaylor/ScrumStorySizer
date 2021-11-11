@@ -74,11 +74,11 @@ namespace ScrumStorySizer.Library.Services
             {
                 new { op = "add", path = "/fields/Microsoft.VSTS.Scheduling.Effort", value = $"{size}"},
                 new { op = "add", path = "/fields/System.State", value = "Approved"},
-                new { op = "update", path = "/fields/System.Tags", value = tagList},
+                new { op = "replace", path = "/fields/System.Tags", value = tagList},
             };
             string requestBody = JsonSerializer.Serialize(request);
 
-            var workItemResponse = await _httpClient.PatchAsync(requestUri, new StringContent(requestBody, Encoding.UTF8, "application/json"));
+            var workItemResponse = await _httpClient.PatchAsync(requestUri, new StringContent(requestBody, Encoding.UTF8, "application/json-patch+json"));
             string rawResponse = await workItemResponse.Content.ReadAsStringAsync();
             if (!workItemResponse.IsSuccessStatusCode)
             {

@@ -9,12 +9,14 @@ using System.Threading.Tasks;
 
 namespace ScrumStorySizer.Library.Components
 {
-    public partial class DevOpsStory : StoryBase
+    public partial class DevOpsStory
     {
         [CascadingParameter(Name = "_messagePopUp")] public MessagePopUp _messagePopUp { get; set; }
 
         [Parameter] public DevOpsCredential DevOpsCredential { get; set; }
-
+        
+        [Inject] protected IVotingService PokerVote { get; set; }
+        [Inject] protected IJSRuntime JSRuntime { get; set; }
         [Inject] protected NavigationManager NavigationManager { get; set; }
 
         private string _workItemId;
@@ -30,7 +32,6 @@ namespace ScrumStorySizer.Library.Components
             try
             {
                 PokerVote.UpdateWorkItem(await workItemClient.GetWorkItem(_workItemId));
-                OnUpdate();
             }
             catch (UnauthorizedAccessException)
             {
@@ -50,9 +51,8 @@ namespace ScrumStorySizer.Library.Components
             }
         }
 
-        protected override void NewStory()
+        public void NewStory()
         {
-            base.NewStory();
             _workItemId = string.Empty;
         }
     }

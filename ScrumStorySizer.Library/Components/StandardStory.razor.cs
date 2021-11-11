@@ -1,10 +1,14 @@
+using System;
 using Microsoft.AspNetCore.Components;
 using ScrumStorySizer.Library.Models;
+using ScrumStorySizer.Library.Services;
 
 namespace ScrumStorySizer.Library.Components
 {
-    public partial class StandardStory : StoryBase
+    public partial class StandardStory : IDisposable
     {
+        [Inject] protected IVotingService PokerVote { get; set; }
+
         private string _storyName;
         private string _serverStoryName;
         private bool _titleFocus;
@@ -19,7 +23,7 @@ namespace ScrumStorySizer.Library.Components
             _serverStoryName = PokerVote.WorkItem?.Title;
             if (!_titleFocus)
                 _storyName = _serverStoryName;
-            OnUpdate();
+            InvokeAsync(StateHasChanged);
         }
 
         protected override void OnInitialized()
@@ -29,9 +33,8 @@ namespace ScrumStorySizer.Library.Components
             _serverStoryName = PokerVote.WorkItem?.Title;
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
-            base.Dispose();
             PokerVote.OnChange -= ReconcileStoryName;
         }
     }
