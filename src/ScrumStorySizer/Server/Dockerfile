@@ -1,8 +1,7 @@
 FROM mcr.microsoft.com/dotnet/aspnet:5.0-focal AS base
 WORKDIR /app
-EXPOSE 5002
-
-ENV ASPNETCORE_URLS=http://+:5002
+EXPOSE 5000
+ENV ASPNETCORE_URLS=http://+:5000
 
 # Creates a non-root user with an explicit UID and adds permission to access the /app folder
 # For more info, please refer to https://aka.ms/vscode-docker-dotnet-configure-containers
@@ -10,11 +9,9 @@ RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /
 USER appuser
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0-focal AS build
-WORKDIR /src
-COPY ["ScrumStorySizer/Server/ScrumStorySizer.Server.csproj", "ScrumStorySizer/Server/"]
-RUN dotnet restore "ScrumStorySizer/Server/ScrumStorySizer.Server.csproj"
-COPY . .
+COPY src src
 WORKDIR "/src/ScrumStorySizer/Server"
+RUN dotnet restore "ScrumStorySizer.Server.csproj"
 RUN dotnet build "ScrumStorySizer.Server.csproj" -c Release -o /app/build
 
 FROM build AS publish
