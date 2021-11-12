@@ -62,7 +62,7 @@ namespace ScrumStorySizer.Server
                 OnPrepareResponse = ctx =>
                 {
                     if (ctx.Context.Request.Path.HasValue && (ctx.Context.Request.Path.Value.Contains("/api") || ctx.Context.Request.Path.Value.Contains("/devops")
-                        || ctx.Context.Request.Path.Value.EndsWith("site.css")))
+                        || ctx.Context.Request.Path.Value.EndsWith("site.css") || ctx.Context.Request.Path.Value.EndsWith("site.js")))
                         ctx.Context.Response.Headers.Add("Cache-Control", "no-cache");
                 }
             });
