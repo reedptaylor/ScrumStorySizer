@@ -26,7 +26,7 @@ jobs:
           context: .
           file: src/ScrumStorySizer/Server/Dockerfile
           push: true
-          tags: reedptaylor/scrumstorysizer:dev
+          tags: reedptaylor/scrumstorysizer:latest,reedptaylor/scrumstorysizer:${{ github.run_id }}
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
