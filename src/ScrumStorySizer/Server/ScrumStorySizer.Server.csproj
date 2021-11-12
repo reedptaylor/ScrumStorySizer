@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <DockerFileContext>../../..</DockerFileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="5.0.12" />
+    <PackageReference Include="Yarp.ReverseProxy" Version="1.0.0-rc.1.21520.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Client\ScrumStorySizer.Client.csproj" />
+    <ProjectReference Include="..\..\ScrumStorySizer.Library\ScrumStorySizer.Library.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Hubs\" />
+  </ItemGroup>
+</Project>

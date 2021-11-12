@@ -1,0 +1,50 @@
+@using Microsoft.AspNetCore.SignalR.Client
+@inject IVotingService VotingService
+
+<Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="true" AdditionalAssemblies="new[] { typeof(ScrumStorySizer.Library.Pages.Master).Assembly }">
+    <Found Context="routeData">
+        <CascadingValue Name="_messagePopUp" Value="_messagePopUp" TValue="MessagePopUp">
+            <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        </CascadingValue>
+    </Found>
+    <NotFound>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p>Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
+<MessagePopUp @ref="_messagePopUp" />
+<ConnectionError State="@VotingService.HubConnection.State" />
+
+
+@code {
+    private Task OnUpdate()
+    {
+        InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+        return Task.CompletedTask;
+    }
+
+    private async Task OnReconnect()
+    {
+        await VotingService.HubConnection.SendAsync("NewConnection");
+        await OnUpdate();
+    }
+
+    MessagePopUp _messagePopUp;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (VotingService.HubConnection.State == HubConnectionState.Disconnected)
+        {
+            await VotingService.HubConnection.StartAsync();
+            await VotingService.HubConnection.SendAsync("NewConnection");
+        }
+
+        VotingService.HubConnection.Closed += (_) => OnUpdate();
+        VotingService.HubConnection.Reconnected += (_) => OnReconnect();
+        VotingService.HubConnection.Reconnecting += (_) => OnUpdate();
+    }
+}
