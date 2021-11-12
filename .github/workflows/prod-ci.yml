@@ -1,8 +1,8 @@
-name: dev-ci
+name: prod-ci
 
 on:
   push:
-    branches-ignore:
+    branches:
       - main
 
 jobs:
@@ -33,4 +33,4 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           known_hosts: ${{ secrets.SERVER_SSH_KNOWN_HOSTS }}
       - name: Docker Run
-        run: ssh reed@${{ secrets.SERVER_SSH_HOST }} 'docker container rm -f scrumstorysizer-dev | docker run --rm -d --name scrumstorysizer-dev --pull always -p 5009:5000/tcp reedptaylor/scrumstorysizer:dev'
+        run: ssh reed@${{ secrets.SERVER_SSH_HOST }} 'docker container rm -f scrumstorysizer-prod | docker run --rm -d --name scrumstorysizer-prod --pull always -p 5008:5000/tcp reedptaylor/scrumstorysizer:latest'
