@@ -12,6 +12,7 @@ namespace ScrumStorySizer.Library.Components
     public partial class DevOpsStory
     {
         [CascadingParameter(Name = "_messagePopUp")] public MessagePopUp _messagePopUp { get; set; }
+        [CascadingParameter(Name = "_spinner")] public Spinner _spinner { get; set; }
 
         [Parameter] public DevOpsCredential DevOpsCredential { get; set; }
         
