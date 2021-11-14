@@ -10,7 +10,7 @@ namespace ScrumStorySizer.Library.Components
         public void Set(bool enabled)
         {
             Show = enabled;
-            StateHasChanged();
+            InvokeAsync(StateHasChanged);
         }
     }
 }

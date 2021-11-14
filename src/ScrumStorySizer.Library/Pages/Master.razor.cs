@@ -89,10 +89,12 @@ namespace ScrumStorySizer.Library.Pages
             }
             catch (UnauthorizedAccessException)
             {
+                _spinner.Set(false);
                 _messagePopUp.ShowMessage("Unable to authenticate your DevOps credentials. Please verify them in settings.");
             }
             catch
             {
+                _spinner.Set(false);
                 _messagePopUp.ShowMessage("Unable to update work item with that ID.");
             }
         }

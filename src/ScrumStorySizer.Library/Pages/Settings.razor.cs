@@ -58,6 +58,7 @@ namespace ScrumStorySizer.Library.Pages
             }
             catch
             {
+                _spinner.Set(false);
                 _messagePopUp.ShowMessage("Credentials are invalid.");
             }
         }
