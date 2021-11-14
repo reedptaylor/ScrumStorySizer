@@ -31,7 +31,9 @@ namespace ScrumStorySizer.Library.Components
             IWorkItemClient workItemClient = new DevOpsClient(httpClient, NavigationManager, DevOpsCredential);
             try
             {
+                _spinner.Set(true);
                 PokerVote.UpdateWorkItem(await workItemClient.GetWorkItem(_workItemId));
+                _spinner.Set(false);
             }
             catch (UnauthorizedAccessException)
             {

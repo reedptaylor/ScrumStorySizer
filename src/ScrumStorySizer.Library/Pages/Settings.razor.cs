@@ -49,8 +49,10 @@ namespace ScrumStorySizer.Library.Pages
             IWorkItemClient workItemClient = new DevOpsClient(httpClient, NavigationManager, DevOpsCredential);
             try
             {
+                _spinner.Set(true);
                 await workItemClient.TestAuthentication();
                 await SaveCredential();
+                _spinner.Set(false);
                 _messagePopUp.ShowMessage("Credentials are saved.");
             }
             catch
