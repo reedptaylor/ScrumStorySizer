@@ -14,6 +14,7 @@ namespace ScrumStorySizer.Library.Pages
     public partial class Settings
     {
         [CascadingParameter(Name = "_messagePopUp")] public MessagePopUp _messagePopUp { get; set; }
+        [CascadingParameter(Name = "_spinner")] public Spinner _spinner { get; set; }
 
         [Inject] protected IJSRuntime JSRuntime { get; set; }
         [Inject] protected NavigationManager NavigationManager { get; set; }
@@ -49,12 +50,15 @@ namespace ScrumStorySizer.Library.Pages
             IWorkItemClient workItemClient = new DevOpsClient(httpClient, NavigationManager, DevOpsCredential);
             try
             {
+                _spinner.Set(true);
                 await workItemClient.TestAuthentication();
                 await SaveCredential();
+                _spinner.Set(false);
                 _messagePopUp.ShowMessage("Credentials are saved.");
             }
             catch
             {
+                _spinner.Set(false);
                 _messagePopUp.ShowMessage("Credentials are invalid.");
             }
         }
