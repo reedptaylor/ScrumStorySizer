@@ -12,6 +12,7 @@ namespace ScrumStorySizer.Library.Components
     public partial class DevOpsStory
     {
         [CascadingParameter(Name = "_messagePopUp")] public MessagePopUp _messagePopUp { get; set; }
+        [CascadingParameter(Name = "_spinner")] public Spinner _spinner { get; set; }
 
         [Parameter] public DevOpsCredential DevOpsCredential { get; set; }
         
@@ -31,14 +32,18 @@ namespace ScrumStorySizer.Library.Components
             IWorkItemClient workItemClient = new DevOpsClient(httpClient, NavigationManager, DevOpsCredential);
             try
             {
+                _spinner.Set(true);
                 PokerVote.UpdateWorkItem(await workItemClient.GetWorkItem(_workItemId));
+                _spinner.Set(false);
             }
             catch (UnauthorizedAccessException)
             {
+                _spinner.Set(false);
                 _messagePopUp.ShowMessage("Unable to authenticate your DevOps credentials. Please verify them in settings.");
             }
             catch
             {
+                _spinner.Set(false);
                 _messagePopUp.ShowMessage("Unable to get work item with that ID.");
             }
         }

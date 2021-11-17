@@ -14,6 +14,7 @@ namespace ScrumStorySizer.Library.Pages
     public partial class Settings
     {
         [CascadingParameter(Name = "_messagePopUp")] public MessagePopUp _messagePopUp { get; set; }
+        [CascadingParameter(Name = "_spinner")] public Spinner _spinner { get; set; }
 
         [Inject] protected IJSRuntime JSRuntime { get; set; }
         [Inject] protected NavigationManager NavigationManager { get; set; }
@@ -22,6 +23,7 @@ namespace ScrumStorySizer.Library.Pages
         public TeamMemberSettings TeamMemberSettings { get; set; } = new();
 
         private bool showCredential = false;
+        private string patHelpText = "Personal Access Token (PAT) requires Work Items: read and write permission.";
 
         private async Task SaveCredential()
         {
@@ -49,12 +51,15 @@ namespace ScrumStorySizer.Library.Pages
             IWorkItemClient workItemClient = new DevOpsClient(httpClient, NavigationManager, DevOpsCredential);
             try
             {
+                _spinner.Set(true);
                 await workItemClient.TestAuthentication();
                 await SaveCredential();
+                _spinner.Set(false);
                 _messagePopUp.ShowMessage("Credentials are saved.");
             }
             catch
             {
+                _spinner.Set(false);
                 _messagePopUp.ShowMessage("Credentials are invalid.");
             }
         }
@@ -73,6 +78,10 @@ namespace ScrumStorySizer.Library.Pages
             }
         }
 
+        private void ShowPatHelp()
+        {
+            _messagePopUp.ShowMessage(patHelpText + " <a href=\"https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate\" target=\"_blank\">Click here for help.</a>", true);
+        }
         protected async override Task OnInitializedAsync()
         {
             string scrumMasterSettings = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "devops-auth");

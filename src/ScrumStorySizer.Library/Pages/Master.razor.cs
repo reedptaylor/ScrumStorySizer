@@ -15,6 +15,7 @@ namespace ScrumStorySizer.Library.Pages
     public partial class Master : IDisposable
     {
         [CascadingParameter(Name = "_messagePopUp")] public MessagePopUp _messagePopUp { get; set; }
+        [CascadingParameter(Name = "_spinner")] public Spinner _spinner { get; set; }
 
         [Inject] protected IJSRuntime JSRuntime { get; set; }
         [Inject] protected NavigationManager NavigationManager { get; set; }
@@ -81,15 +82,19 @@ namespace ScrumStorySizer.Library.Pages
             IWorkItemClient workItemClient = new DevOpsClient(httpClient, NavigationManager, DevOpsCredential);
             try
             {
+                _spinner.Set(true);
                 await workItemClient.SizeWorkItem(PokerVote.WorkItem?.Id, (int)size);
                 NewStory();
+                _spinner.Set(false);
             }
             catch (UnauthorizedAccessException)
             {
+                _spinner.Set(false);
                 _messagePopUp.ShowMessage("Unable to authenticate your DevOps credentials. Please verify them in settings.");
             }
             catch
             {
+                _spinner.Set(false);
                 _messagePopUp.ShowMessage("Unable to update work item with that ID.");
             }
         }
