@@ -24,7 +24,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: src/ScrumStorySizer/Server/Dockerfile
+          file: src/Server/Dockerfile
           push: true
           tags: reedptaylor/scrumstorysizer:dev
       - name: Install SSH Key
