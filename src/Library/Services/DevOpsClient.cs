@@ -66,7 +66,7 @@ namespace ScrumStorySizer.Library.Services
         {
             WorkItem workItem = await GetWorkItem(id);
             List<string> tags = new List<string>() { "Planning" };
-            tags.AddRange(workItem?.Tags?.Where(tag => tag != "Ready2Groom"));
+            tags.AddRange(workItem?.Tags?.Where(tag => tag != "Ready2Groom") ?? new List<string>());
             string tagList = string.Join(';', tags);
 
             string requestUri = $"wit/workitems/{id}?api-version=6.0";

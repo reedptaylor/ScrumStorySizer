@@ -83,7 +83,7 @@ namespace ScrumStorySizer.Library.Pages
             try
             {
                 _spinner.Set(true);
-                await workItemClient.SizeWorkItem(PokerVote.WorkItem?.Id, (int)size);
+                await workItemClient.SizeWorkItem(PokerVote.WorkItem?.Id ?? "0", (int)size);
                 NewStory();
                 _spinner.Set(false);
             }
@@ -108,7 +108,7 @@ namespace ScrumStorySizer.Library.Pages
                 try
                 {
                     scrumMasterSettings = Encoding.UTF8.GetString(Convert.FromBase64String(scrumMasterSettings));
-                    DevOpsCredential = JsonSerializer.Deserialize<DevOpsCredential>(scrumMasterSettings);
+                    DevOpsCredential = JsonSerializer.Deserialize<DevOpsCredential>(scrumMasterSettings) ?? new();
                     OnUpdate();
                 }
                 catch { }

@@ -7,10 +7,10 @@
             if (group.Count > 0)
             {
                 int percent = group.Count * 100 / SizeVotes.Count;
-                StorySize groupStorySize = group.FirstOrDefault().Size;
+                StorySize groupStorySize = group.First().Size;
                 string title = groupStorySize == StorySize.XXL ? "Story size 13. Needs to be broken up." : $"Story size {(int)groupStorySize}";
                 <div class="mt-3 mb-2" title="@title">
-                    <span class="progress-label mr-2">@group.FirstOrDefault().Size</span>
+                    <span class="progress-label mr-2">@group.First().Size</span>
                     <div class="progress">
                         <div class="progress-bar" style="width: @(percent)%" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100">@group.Count vote@(group.Count == 1 ? "" : "s")</div>
                     </div>

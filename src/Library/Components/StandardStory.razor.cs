@@ -15,12 +15,12 @@ namespace ScrumStorySizer.Library.Components
 
         private void UpdateStoryName(ChangeEventArgs e)
         {
-            PokerVote.UpdateWorkItem(new WorkItem() { Title = e.Value.ToString() });
+            PokerVote.UpdateWorkItem(new WorkItem() { Title = e.Value?.ToString() ?? string.Empty });
         }
 
         private void ReconcileStoryName()
         {
-            _serverStoryName = PokerVote.WorkItem?.Title;
+            _serverStoryName = PokerVote.WorkItem?.Title ?? string.Empty;
             if (!_titleFocus)
                 _storyName = _serverStoryName;
             InvokeAsync(StateHasChanged);
@@ -29,8 +29,8 @@ namespace ScrumStorySizer.Library.Components
         protected override void OnInitialized()
         {
             PokerVote.OnChange += ReconcileStoryName;
-            _storyName = PokerVote.WorkItem?.Title;
-            _serverStoryName = PokerVote.WorkItem?.Title;
+            _storyName = PokerVote.WorkItem?.Title ?? string.Empty;
+            _serverStoryName = PokerVote.WorkItem?.Title ?? string.Empty;
         }
 
         public void Dispose()
