@@ -1,26 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.ResponseCompression;
+using ScrumStorySizer.Server;
+using ScrumStorySizer.Server.Hubs;
 
-namespace ScrumStorySizer.Server
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+
+builder.Services.AddSignalR();
+builder.Services.AddResponseCompression(options =>
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+        new[] { "application/octet-stream" });
+});
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+builder.Services.AddReverseProxy()
+    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+
+builder.Services.AddSingleton<CacheService>();
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+    app.UseWebAssemblyDebugging();
+else
+    app.UseExceptionHandler("/Error");
+
+app.UseHttpsRedirection();
+app.UseBlazorFrameworkFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = ctx =>
+    {
+        if (ctx.Context.Request.Path.HasValue && (ctx.Context.Request.Path.Value.Contains("/api") || ctx.Context.Request.Path.Value.Contains("/devops")
+            || ctx.Context.Request.Path.Value.EndsWith("site.css") || ctx.Context.Request.Path.Value.EndsWith("site.js")))
+            ctx.Context.Response.Headers.Add("Cache-Control", "no-cache");
     }
-}
+});
+
+app.UseRouting();
+
+app.MapRazorPages();
+app.MapControllers();
+app.MapHub<VoteHub>("/votehub");
+app.MapReverseProxy();
+app.MapFallbackToFile("index.html");
+
+app.Run();
