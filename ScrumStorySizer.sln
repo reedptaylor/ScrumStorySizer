@@ -1,11 +1,11 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrumStorySizer.Server", "src/ScrumStorySizer\Server\ScrumStorySizer.Server.csproj", "{7D606DA5-256B-4EE6-8361-0A170DD52951}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrumStorySizer.Server", "src\Server\ScrumStorySizer.Server.csproj", "{7D606DA5-256B-4EE6-8361-0A170DD52951}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrumStorySizer.Client", "src/ScrumStorySizer\Client\ScrumStorySizer.Client.csproj", "{D785F318-C25F-4DA3-8B6B-9E65199000F1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrumStorySizer.Client", "src\Client\ScrumStorySizer.Client.csproj", "{D785F318-C25F-4DA3-8B6B-9E65199000F1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrumStorySizer.Library", "src/ScrumStorySizer.Library\ScrumStorySizer.Library.csproj", "{3BF2A884-3F2D-409D-9042-038D7EBB6488}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScrumStorySizer.Library", "src/Library\ScrumStorySizer.Library.csproj", "{3BF2A884-3F2D-409D-9042-038D7EBB6488}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
