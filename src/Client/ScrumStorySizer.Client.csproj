@@ -18,8 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ScrumStorySizer.Library\ScrumStorySizer.Library.csproj">
+    <ProjectReference Include="..\Library\ScrumStorySizer.Library.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>
+  
 </Project>

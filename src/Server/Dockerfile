@@ -10,7 +10,7 @@ USER appuser
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0-focal AS build
 COPY src src
-WORKDIR "/src/ScrumStorySizer/Server"
+WORKDIR "/src/Server"
 RUN dotnet restore "ScrumStorySizer.Server.csproj"
 RUN dotnet build "ScrumStorySizer.Server.csproj" -c Release -o /app/build
 
