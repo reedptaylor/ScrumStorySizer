@@ -61,7 +61,7 @@ namespace ScrumStorySizer.Library.Services
             fields.TryGetProperty("Microsoft.VSTS.Common.AcceptanceCriteria", out JsonElement criteriaElement);
             workItem.AcceptanceCriteria = GetJsonValue(criteriaElement);
             fields.TryGetProperty("System.Tags", out JsonElement tagsElement);
-            workItem.Tags = GetJsonValue(tagsElement).Split(";") ?? Array.Empty<string>();
+            workItem.Tags = GetJsonValue(tagsElement).Split(";").Select(tag => tag?.Trim()) ?? Array.Empty<string>();
 
             return workItem;
         }
