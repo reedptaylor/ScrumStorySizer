@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace ScrumStorySizer.Library.Components
 {
-    public partial class ConnectionError
+    public partial class ConnectionError // Modal for displaying bad connection state for SignalR updates
     {
         [Parameter] public HubConnectionState State { get; set; }
 

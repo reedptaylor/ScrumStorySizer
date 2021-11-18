@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ScrumStorySizer.Library.Pages
 {
-    public partial class Team : IDisposable
+    public partial class Team : IDisposable // Scrum Team Page
     {
         [Inject] protected IJSRuntime JSRuntime { get; set; }
         [Inject] IVotingService PokerVote { get; set; }
@@ -19,8 +19,8 @@ namespace ScrumStorySizer.Library.Pages
         {
             PokerVote.AddStorySizeVotes(new SizeVote() { Size = vote, User = Username });
             ChangeVote = false;
-            NameDisabled = true;
-            jumboclass = "jumbo-shrink";
+            NameDisabled = true; // Don't allow the user to change their name after voting
+            jumboclass = "jumbo-shrink"; // Shrink jumbo after voting
         }
 
         private string jumboclass = "";
@@ -41,7 +41,7 @@ namespace ScrumStorySizer.Library.Pages
             });
         }
 
-        protected async override Task OnInitializedAsync()
+        protected async override Task OnInitializedAsync() // Load user defaults/settings
         {
             PokerVote.OnChange += OnUpdate;
             string teamMemberSettings = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "team-member-settings");

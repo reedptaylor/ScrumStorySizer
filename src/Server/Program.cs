@@ -15,7 +15,7 @@ builder.Services.AddResponseCompression(options =>
 });
 
 builder.Services.AddReverseProxy()
-    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
+    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy")); // Use reverse proxy to allow clients to make requests to DevOps
 
 builder.Services.AddSingleton<CacheService>();
 

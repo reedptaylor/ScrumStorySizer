@@ -5,7 +5,7 @@ using ScrumStorySizer.Library.Services;
 
 namespace ScrumStorySizer.Library.Components
 {
-    public partial class StandardStory : IDisposable
+    public partial class StandardStory : IDisposable // Component for entering a Work Item name instead of using DevOps integration
     {
         [Inject] protected IVotingService PokerVote { get; set; }
 
@@ -15,10 +15,10 @@ namespace ScrumStorySizer.Library.Components
 
         private void UpdateStoryName(ChangeEventArgs e)
         {
-            PokerVote.UpdateWorkItem(new WorkItem() { Title = e.Value?.ToString() ?? string.Empty });
+            PokerVote.UpdateWorkItem(new WorkItem() { Title = e.Value?.ToString() ?? string.Empty }); // Set only the title
         }
 
-        private void ReconcileStoryName()
+        private void ReconcileStoryName() // Sync story names between Scrum Masters if multiple Scrum Masters hav the page open (edge case)
         {
             _serverStoryName = PokerVote.WorkItem?.Title ?? string.Empty;
             if (!_titleFocus)

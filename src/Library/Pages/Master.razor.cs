@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ScrumStorySizer.Library.Pages
 {
-    public partial class Master : IDisposable
+    public partial class Master : IDisposable // Scrum Master Page
     {
         [CascadingParameter(Name = "_messagePopUp")] public MessagePopUp _messagePopUp { get; set; }
         [CascadingParameter(Name = "_spinner")] public Spinner _spinner { get; set; }
@@ -31,7 +31,7 @@ namespace ScrumStorySizer.Library.Pages
         protected void StartTimer(int seconds)
         {
             TimerActive = true;
-            _ = Task.Run(async () =>
+            _ = Task.Run(async () => // Run timer in background thread
             {
                 while (seconds > 0 && TimerActive)
                 {
@@ -73,7 +73,7 @@ namespace ScrumStorySizer.Library.Pages
         {
             ClearVotes();
             UpdateWorkItem(new WorkItem());
-            _devOpsStoryRef?.NewStory();
+            _devOpsStoryRef?.NewStory(); // Clear fields in DevOps component (if active)
         }
 
         private async Task SaveVote(StorySize size)
@@ -95,13 +95,15 @@ namespace ScrumStorySizer.Library.Pages
             catch
             {
                 _spinner.Set(false);
-                _messagePopUp.ShowMessage("Unable to update work item with that ID.");
+                _messagePopUp.ShowMessage("Unable to update work item.");
             }
         }
 
         protected async override Task OnInitializedAsync()
         {
             PokerVote.OnChange += OnUpdate;
+
+            // Load credential from local storage
             string scrumMasterSettings = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "devops-auth");
             if (!string.IsNullOrWhiteSpace(scrumMasterSettings))
             {

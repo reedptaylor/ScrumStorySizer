@@ -4,7 +4,7 @@ using ScrumStorySizer.Library.Models;
 
 namespace ScrumStorySizer.Server
 {
-    public class CacheService
+    public class CacheService // Server cache of application state
     {
         public WorkItem WorkItem { get; set; }
 

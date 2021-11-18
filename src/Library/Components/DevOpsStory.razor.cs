@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ScrumStorySizer.Library.Components
 {
-    public partial class DevOpsStory
+    public partial class DevOpsStory // Component for entering a DevOps Work Item ID instead of Name
     {
         [CascadingParameter(Name = "_messagePopUp")] public MessagePopUp _messagePopUp { get; set; }
         [CascadingParameter(Name = "_spinner")] public Spinner _spinner { get; set; }
@@ -33,7 +33,7 @@ namespace ScrumStorySizer.Library.Components
             try
             {
                 _spinner.Set(true);
-                PokerVote.UpdateWorkItem(await workItemClient.GetWorkItem(_workItemId));
+                PokerVote.UpdateWorkItem(await workItemClient.GetWorkItem(_workItemId)); // Send value to all connected clients
                 _spinner.Set(false);
             }
             catch (UnauthorizedAccessException)
@@ -48,7 +48,7 @@ namespace ScrumStorySizer.Library.Components
             }
         }
 
-        private async Task IdKeyDown(KeyboardEventArgs e)
+        private async Task IdKeyDown(KeyboardEventArgs e) // Allow look up on pressing enter
         {
             if (e.Key == "Enter")
             {
@@ -56,7 +56,7 @@ namespace ScrumStorySizer.Library.Components
             }
         }
 
-        public void NewStory()
+        public void NewStory() // Used by parent component to clear out text in this component (if active)
         {
             _workItemId = string.Empty;
         }

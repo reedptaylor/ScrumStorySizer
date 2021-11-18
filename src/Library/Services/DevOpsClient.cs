@@ -12,33 +12,37 @@ using Microsoft.AspNetCore.Components;
 
 namespace ScrumStorySizer.Library.Services
 {
-    public class DevOpsClient : IWorkItemClient
+    public class DevOpsClient : IWorkItemClient // Client for getting and setting information in DevOps
     {
         private readonly HttpClient _httpClient;
         private readonly DevOpsCredential _credential;
+
+        private readonly List<string> _tagsToAdd = new() { "Planning" };
+        private readonly List<string> _tagsToRemove = new() { "Ready2Groom" };
+        private readonly string _newState = "Approved";
 
         public DevOpsClient(HttpClient httpClient, NavigationManager navigationManager, DevOpsCredential credential)
         {
             _httpClient = httpClient;
             _credential = credential;
 
+            // Set address using Yarp Proxy
             _httpClient.BaseAddress = new Uri($"{navigationManager.BaseUri}devops/{credential.Organization}/{credential.Project}/_apis/");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credential.BasicAuth);
         }
 
         public async Task TestAuthentication()
         {
-            string requestUri = $"wit/workitems?ids=0&api-version=6.0";
-            var workItemResponse = await _httpClient.GetAsync(requestUri);
+            // Test authentication using get work item with ID = 0. A 403 signifies authentication failure while a 400 signifies success.
+            var workItemResponse = await _httpClient.GetAsync($"wit/workitems?ids=0&api-version=6.0");
             if (!workItemResponse.IsSuccessStatusCode && workItemResponse.StatusCode != HttpStatusCode.BadRequest)
                 throw new UnauthorizedAccessException();
         }
 
-        public async Task<WorkItem> GetWorkItem(string id)
+        public async Task<WorkItem> GetWorkItem(string id) // Get work item and parse JSON into model
         {
             WorkItem workItem = new();
-            string requestUri = $"wit/workitems/{id}?api-version=6.0";
-            var workItemResponse = await _httpClient.GetAsync(requestUri);
+            var workItemResponse = await _httpClient.GetAsync($"wit/workitems/{id}?api-version=6.0");
             string rawResponse = await workItemResponse.Content.ReadAsStringAsync();
             if (!workItemResponse.IsSuccessStatusCode)
             {
@@ -62,24 +66,29 @@ namespace ScrumStorySizer.Library.Services
             return workItem;
         }
 
-        public async Task SizeWorkItem(string id, int size)
+        public async Task SizeWorkItem(string id, int size) // Update work item in DevOps
         {
-            WorkItem workItem = await GetWorkItem(id);
-            List<string> tags = new List<string>() { "Planning" };
-            tags.AddRange(workItem?.Tags?.Where(tag => tag != "Ready2Groom") ?? new List<string>());
+            WorkItem workItem = await GetWorkItem(id); // Get latest work item in case there were changes
+
+            List<string> tags = _tagsToAdd.ToList();
+            tags.AddRange(workItem.Tags?.Where(tag => !_tagsToRemove.Contains(tag)) ?? new List<string>());
             string tagList = string.Join(';', tags);
 
-            string requestUri = $"wit/workitems/{id}?api-version=6.0";
-            var request = new[]
+            var request = new List<object>() // Always update size and conditionally update tags and state
             {
                 new { op = "add", path = "/fields/Microsoft.VSTS.Scheduling.Effort", value = $"{size}"},
-                new { op = "add", path = "/fields/System.State", value = "Approved"},
-                new { op = "replace", path = "/fields/System.Tags", value = tagList},
             };
-            string requestBody = JsonSerializer.Serialize(request);
 
-            var workItemResponse = await _httpClient.PatchAsync(requestUri, new StringContent(requestBody, Encoding.UTF8, "application/json-patch+json"));
+            if (!string.IsNullOrWhiteSpace(_newState))
+                request.Add(new { op = "add", path = "/fields/System.State", value = _newState});
+
+            if (_tagsToAdd?.Any() == true || _tagsToRemove?.Any() == true)
+                request.Add(new { op = "replace", path = "/fields/System.Tags", value = tagList});
+
+            string requestBody = JsonSerializer.Serialize(request);
+            var workItemResponse = await _httpClient.PatchAsync($"wit/workitems/{id}?api-version=6.0", new StringContent(requestBody, Encoding.UTF8, "application/json-patch+json"));
             string rawResponse = await workItemResponse.Content.ReadAsStringAsync();
+
             if (!workItemResponse.IsSuccessStatusCode)
             {
                 throw (workItemResponse.StatusCode == HttpStatusCode.Unauthorized || workItemResponse.StatusCode == HttpStatusCode.Forbidden)
@@ -87,7 +96,7 @@ namespace ScrumStorySizer.Library.Services
             }
         }
 
-        private string GetJsonValue(JsonElement element)
+        private string GetJsonValue(JsonElement element) // Helper to get Json Value from JsonElement
         {
             if (element.ValueKind == JsonValueKind.String || element.ValueKind == JsonValueKind.Null)
                 return element.GetString() ?? string.Empty;

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace ScrumStorySizer.Library.Components
 {
-    public partial class Spinner
+    public partial class Spinner // Loading spinner for network calls or long running Tasks
     {
         public bool Show { get; private set; }
 

@@ -11,7 +11,7 @@ using ScrumStorySizer.Library.Services;
 
 namespace ScrumStorySizer.Library.Pages
 {
-    public partial class Settings
+    public partial class Settings // Settings Page
     {
         [CascadingParameter(Name = "_messagePopUp")] public MessagePopUp _messagePopUp { get; set; }
         [CascadingParameter(Name = "_spinner")] public Spinner _spinner { get; set; }
@@ -23,15 +23,15 @@ namespace ScrumStorySizer.Library.Pages
         public TeamMemberSettings TeamMemberSettings { get; set; } = new();
 
         private bool showCredential = false;
-        private string patHelpText = "Personal Access Token (PAT) requires Work Items: read and write permission.";
+        private readonly string patHelpText = "Personal Access Token (PAT) requires Work Items: read and write permission.";
 
-        private async Task SaveCredential()
+        private async Task SaveCredential() // Save to localStorage
         {
             string auth = Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(DevOpsCredential));
             await JSRuntime.InvokeVoidAsync("localStorage.setItem", "devops-auth", auth);
         }
 
-        private async Task SetEnabled(bool value)
+        private async Task SetEnabled(bool value) // Test credential if changing to enabled otherwise just save
         {
             DevOpsCredential.IsEnabled = value;
             if (!DevOpsCredential.IsEnabled)
@@ -45,7 +45,7 @@ namespace ScrumStorySizer.Library.Pages
             }
         }
 
-        private async Task SubmitCredential()
+        private async Task SubmitCredential() // Test credential with DevOps
         {
             using var httpClient = new HttpClient();
             IWorkItemClient workItemClient = new DevOpsClient(httpClient, NavigationManager, DevOpsCredential);
@@ -64,7 +64,7 @@ namespace ScrumStorySizer.Library.Pages
             }
         }
 
-        private async Task SaveTeamMemberSettings()
+        private async Task SaveTeamMemberSettings() // Save to localStorage
         {
             try
             {
@@ -78,12 +78,14 @@ namespace ScrumStorySizer.Library.Pages
             }
         }
 
-        private void ShowPatHelp()
+        private void ShowPatHelp() // Open popup with help text
         {
             _messagePopUp.ShowMessage(patHelpText + " <a href=\"https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate\" target=\"_blank\">Click here for help.</a>", true);
         }
+
         protected async override Task OnInitializedAsync()
         {
+            // Load settings from localStorage
             string scrumMasterSettings = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "devops-auth");
             string teamMemberSettings = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "team-member-settings");
             if (!string.IsNullOrWhiteSpace(scrumMasterSettings))

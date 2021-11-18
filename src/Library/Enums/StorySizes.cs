@@ -1,6 +1,6 @@
 namespace ScrumStorySizer.Library.Enums
 {
-    public enum StorySize
+    public enum StorySize // Follow fibonacci sequence for T-Shirt sizing
     {
         XS = 1,
         S = 2,

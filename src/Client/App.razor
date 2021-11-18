@@ -31,19 +31,21 @@
 
     private async Task OnReconnect()
     {
-        await VotingService.HubConnection.SendAsync("NewConnection");
+        await VotingService.HubConnection.SendAsync(Constants.HUB_COMMAND_NEW_CONNECTION);
         await OnUpdate();
     }
 
+    // Component references for access through cascading parameters
     MessagePopUp _messagePopUp;
     Spinner _spinner;
 
     protected override async Task OnInitializedAsync()
     {
+        // Set up SignalR Hub connection and subscribe to connection updates
         if (VotingService.HubConnection.State == HubConnectionState.Disconnected)
         {
             await VotingService.HubConnection.StartAsync();
-            await VotingService.HubConnection.SendAsync("NewConnection");
+            await VotingService.HubConnection.SendAsync(Constants.HUB_COMMAND_NEW_CONNECTION);
         }
 
         VotingService.HubConnection.Closed += (_) => OnUpdate();
