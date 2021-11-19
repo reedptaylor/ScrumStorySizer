@@ -102,19 +102,7 @@ namespace ScrumStorySizer.Library.Pages
         protected async override Task OnInitializedAsync()
         {
             PokerVote.OnChange += OnUpdate;
-
-            // Load credential from local storage
-            string scrumMasterSettings = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "devops-auth");
-            if (!string.IsNullOrWhiteSpace(scrumMasterSettings))
-            {
-                try
-                {
-                    scrumMasterSettings = Encoding.UTF8.GetString(Convert.FromBase64String(scrumMasterSettings));
-                    DevOpsCredential = JsonSerializer.Deserialize<DevOpsCredential>(scrumMasterSettings) ?? new();
-                    OnUpdate();
-                }
-                catch { }
-            }
+            DevOpsCredential = await Helper.GetScrumMasterSettings<DevOpsCredential>(JSRuntime);
         }
 
         public void Dispose()
