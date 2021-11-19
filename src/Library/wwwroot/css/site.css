@@ -209,6 +209,7 @@ app {
   left: 0;
   right: 0;
   bottom: 0;
+  width: 50px;
   background-color: #555a60;
   -webkit-transition: 0.4s;
   transition: 0.4s;
@@ -226,12 +227,24 @@ app {
   transition: 0.4s;
 }
 
+.slider.slider.disabled:before {
+  background-color: #d1d1d1;
+}
+
 input:checked + .slider {
   background-color: #ce8c52;
 }
 
 input:focus + .slider {
   box-shadow: 0 0 1px #ce8c52;
+}
+
+input:checked + .slider.disabled {
+  background-color: #cfa077;
+}
+
+input:focus + .slider.disabled {
+  box-shadow: 0 0 1px #cfa077;
 }
 
 input:checked + .slider:before {

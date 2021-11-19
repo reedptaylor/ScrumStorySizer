@@ -79,8 +79,8 @@
                             Description</label>
                         <label class="switch ml-3 mr-auto mt-auto">
                             <InputCheckbox type="checkbox" id="DevOpsCredential.ShowDescription"
-                                @bind-Value="DevOpsCredential.ShowDescription" />
-                            <span class="slider round"></span>
+                                @bind-Value="DevOpsCredential.ShowDescription" disabled="@(!DevOpsCredential.IsEnabled)" />
+                            <span class="slider round@(DevOpsCredential.IsEnabled ? string.Empty : " disabled")"></span>
                         </label>
                     </div>
                 </div>
