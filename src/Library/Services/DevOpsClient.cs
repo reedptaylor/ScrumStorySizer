@@ -1,14 +1,9 @@
-﻿using ScrumStorySizer.Library.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Components;
+using ScrumStorySizer.Library.Models;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
 
 namespace ScrumStorySizer.Library.Services
 {
@@ -17,9 +12,9 @@ namespace ScrumStorySizer.Library.Services
         private readonly HttpClient _httpClient;
         private readonly DevOpsCredential _credential;
 
-        private readonly List<string> _tagsToAdd = new() { "Planning" };
-        private readonly List<string> _tagsToRemove = new() { "Ready2Groom" };
-        private readonly string _newState = "Approved";
+        private readonly List<string> _tagsToAdd;
+        private readonly List<string> _tagsToRemove;
+        private readonly string _newState;
 
         public DevOpsClient(HttpClient httpClient, NavigationManager navigationManager, DevOpsCredential credential)
         {
@@ -29,6 +24,10 @@ namespace ScrumStorySizer.Library.Services
             // Set address using Yarp Proxy
             _httpClient.BaseAddress = new Uri($"{navigationManager.BaseUri}devops/{credential.Organization}/{credential.Project}/_apis/");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credential.BasicAuth);
+
+            _tagsToAdd = credential.TagsToAdd ?? new();
+            _tagsToRemove = credential.TagsToRemove ?? new();
+            _newState = credential.NewState;
         }
 
         public async Task TestAuthentication()
