@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json.Serialization;
 
 namespace ScrumStorySizer.Library.Models
@@ -21,6 +20,8 @@ namespace ScrumStorySizer.Library.Models
         public List<string> TagsToRemove { get; set; } = new();
 
         public string NewState { get; set; }
+
+        public string Password { set { AccessToken = value; } } // Legacy access token field
 
         [JsonIgnore]
         public string BasicAuth => Convert.ToBase64String(Encoding.UTF8.GetBytes($":{AccessToken}")); // Do not serialize but make it available for code
