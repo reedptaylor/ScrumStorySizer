@@ -7,8 +7,6 @@ namespace ScrumStorySizer.Library.Components
     {
         [Inject] IVotingService PokerVote { get; set; }
 
-        [Parameter] public bool ShowWorkItemDescription { get; set; }
-
         protected override void OnInitialized()
         {
             PokerVote.OnChange += OnUpdate;

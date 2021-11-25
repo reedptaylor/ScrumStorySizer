@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using ScrumStorySizer.Library.Models;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.AspNetCore.Components;
-using System.Threading.Tasks;
+using ScrumStorySizer.Library.Models;
 
 namespace ScrumStorySizer.Library.Services
 {
@@ -98,7 +95,7 @@ namespace ScrumStorySizer.Library.Services
         public void UpdateWorkItem(WorkItem workItem)
         {
             if (workItem is null) workItem = new();
-            HubConnection.SendAsync(Constants.HUB_COMMAND_UPDATE_WORK_ITEM, workItem);
+            HubConnection.SendAsync(Constants.HUB_COMMAND_UPDATE_WORK_ITEM, workItem.GetTrimmedObject());
         }
 
         public void CancelTimer()

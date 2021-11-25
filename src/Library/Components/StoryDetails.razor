@@ -5,7 +5,7 @@
     </div>
 </div>
 
-@if (!string.IsNullOrWhiteSpace(PokerVote.WorkItem?.Description) && ShowWorkItemDescription)
+@if (!string.IsNullOrWhiteSpace(PokerVote.WorkItem?.Description))
 {
     <div class="row">
         <div class="col">
@@ -15,7 +15,7 @@
     </div>
 }
 
-@if (!string.IsNullOrWhiteSpace(PokerVote.WorkItem?.AcceptanceCriteria) && ShowWorkItemDescription)
+@if (!string.IsNullOrWhiteSpace(PokerVote.WorkItem?.AcceptanceCriteria))
 {
     <div class="row">
         <div class="col">

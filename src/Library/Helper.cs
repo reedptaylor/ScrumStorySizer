@@ -42,5 +42,26 @@ namespace ScrumStorySizer.Library
 
             return settings;
         }
+
+        public static string LimitByteLength(this string message, int remainingByteSize) // Helper method to get a string with a maximum byte length
+        {
+            if (string.IsNullOrWhiteSpace(message) || remainingByteSize <= 0)
+            {
+                return string.Empty;
+            }
+            
+            int messageByteSize = Encoding.UTF8.GetByteCount(message);
+
+            if (messageByteSize > remainingByteSize)
+            {
+                Encoder encoder = Encoding.UTF8.GetEncoder();
+                byte[] buffer = new byte[remainingByteSize];
+                encoder.Convert(message.AsSpan(), buffer.AsSpan(), false, out _, out messageByteSize, out _);
+                message = Encoding.UTF8.GetString(buffer, 0, messageByteSize);
+            }
+
+            remainingByteSize -= messageByteSize;
+            return message;
+        }
     }
 }

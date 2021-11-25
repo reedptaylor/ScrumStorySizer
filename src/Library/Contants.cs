@@ -11,5 +11,7 @@ namespace ScrumStorySizer.Library
         public const string HUB_COMMAND_NEW_CONNECTION = "NewConnection";
         public const string HUB_COMMAND_CANCEL_TIMER = nameof(VotingService.CancelTimer);
         public const string HUB_COMMAND_TIME_REMAINING = nameof(VotingService.TimeRemaining);
+
+        public const int MAX_SIGNALR_SIZE = 30000;
     }
 }
