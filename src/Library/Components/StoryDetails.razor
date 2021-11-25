@@ -1,0 +1,26 @@
+<div class="row">
+    <div class="col">
+        <label>Story Name</label>
+        <h4>@(string.IsNullOrWhiteSpace(PokerVote.WorkItem?.Title) ? "Waiting..." : PokerVote.WorkItem.Title)</h4>
+    </div>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(PokerVote.WorkItem?.Description) && ShowWorkItemDescription)
+{
+    <div class="row">
+        <div class="col">
+            <label>Description</label>
+            <div>@((MarkupString)PokerVote.WorkItem.Description)</div>
+        </div>
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(PokerVote.WorkItem?.AcceptanceCriteria) && ShowWorkItemDescription)
+{
+    <div class="row">
+        <div class="col">
+            <label>Acceptance Criteria</label>
+            <div>@((MarkupString)PokerVote.WorkItem.AcceptanceCriteria)</div>
+        </div>
+    </div>
+}

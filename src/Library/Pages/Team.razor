@@ -13,12 +13,7 @@
     <div class="card-body">
         <h5 class="card-title">Voting</h5>
         <hr />
-        <div class="row">
-            <div class="col">
-                <label>Story Name</label>
-                <h4>@(string.IsNullOrWhiteSpace(PokerVote.WorkItem?.Title) ? "Waiting..." : PokerVote.WorkItem.Title)</h4>
-            </div>
-        </div>
+        <StoryDetails />
         @if (!PokerVote.ShowVotes && (!PokerVote.StorySizeVotes.Any(item => item.User == Username) || ChangeVote))
         {
             <div class="vote-grp-lg d-flex mt-4 mx-auto">

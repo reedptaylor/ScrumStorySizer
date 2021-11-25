@@ -3,10 +3,6 @@ using Microsoft.JSInterop;
 using ScrumStorySizer.Library.Enums;
 using ScrumStorySizer.Library.Models;
 using ScrumStorySizer.Library.Services;
-using System;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace ScrumStorySizer.Library.Pages
 {
