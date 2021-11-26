@@ -1,3 +1,5 @@
+using Ganss.XSS;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using ScrumStorySizer.Library.Models;
 using System.Text;
@@ -43,13 +45,24 @@ namespace ScrumStorySizer.Library
             return settings;
         }
 
+        public static MarkupString ConvertToMarkupString(this string html) => new MarkupString(html);
+
+        public static string SanitizeHTML(this string html, bool allowCss = false)
+        {
+            if (string.IsNullOrWhiteSpace(html))
+                return string.Empty;
+
+            HtmlSanitizer sanitizer = new(allowedCssProperties: allowCss ? null : new List<string>());
+            return sanitizer.Sanitize(html);
+        }
+
         public static string LimitByteLength(this string message, int remainingByteSize) // Helper method to get a string with a maximum byte length
         {
             if (string.IsNullOrWhiteSpace(message) || remainingByteSize <= 0)
             {
                 return string.Empty;
             }
-            
+
             int messageByteSize = Encoding.UTF8.GetByteCount(message);
 
             if (messageByteSize > remainingByteSize)

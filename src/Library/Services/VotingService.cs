@@ -95,7 +95,8 @@ namespace ScrumStorySizer.Library.Services
         public void UpdateWorkItem(WorkItem workItem)
         {
             if (workItem is null) workItem = new();
-            HubConnection.SendAsync(Constants.HUB_COMMAND_UPDATE_WORK_ITEM, workItem.GetTrimmedObject());
+            workItem.TrimObject();
+            HubConnection.SendAsync(Constants.HUB_COMMAND_UPDATE_WORK_ITEM, workItem);
         }
 
         public void CancelTimer()
