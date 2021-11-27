@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using ScrumStorySizer.Library.Enums;
 using ScrumStorySizer.Library.Models;
@@ -12,6 +8,7 @@ namespace ScrumStorySizer.Library.Components
     public partial class Votes // Shared Component to see votes after voting has finished
     {
         [Parameter] public List<SizeVote> SizeVotes { get; set; }
+        [Parameter] public bool ShowConfetti { get; set; }
 
         [Inject] protected IJSRuntime JSRuntime { get; set; }
 
@@ -31,9 +28,10 @@ namespace ScrumStorySizer.Library.Components
             // Set vote sizes to show (sizes that received votes)
             groupList = SizeVotes.OrderByDescending(item => item.Size).GroupBy(item => item.Size).Select(grp => grp.ToList()).ToList();
 
+            await Task.Delay(100); // Delay to allow ShowConfetti to be set
+
             // Display confetti if all users voted the same size
-            // TODO: Create setting for user to decide if they want to see confetti
-            if (groupList.Count() == 1 && groupList[0].Count > 0)
+            if (ShowConfetti && groupList.Count() == 1 && groupList[0].Count > 0)
             {
                 await JSRuntime.InvokeVoidAsync("confetti.start", 1000);
             }

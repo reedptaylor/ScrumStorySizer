@@ -1,13 +1,9 @@
-using System;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using ScrumStorySizer.Library.Components;
 using ScrumStorySizer.Library.Models;
 using ScrumStorySizer.Library.Services;
+using System.Text.Json;
 
 namespace ScrumStorySizer.Library.Pages
 {
@@ -23,7 +19,11 @@ namespace ScrumStorySizer.Library.Pages
         public TeamMemberSettings TeamMemberSettings { get; set; } = new();
 
         private bool showCredential = false;
+
         private readonly string patHelpText = "Personal Access Token (PAT) requires Work Items: read and write permission.";
+        private readonly string tagsToAddHelpText = "Semicolon delimited list of tags to add to the work item after it is sized. Leave blank for no change.";
+        private readonly string tagsToRemoveHelpText = "Semicolon delimited list of tags to remove from the work item after it is sized. Leave blank for no change.";
+        private readonly string stateHelpText = "State to change work item to after it is sized. Leave blank for no change.";
 
         private async Task SaveCredential() // Save to localStorage
         {
@@ -38,8 +38,8 @@ namespace ScrumStorySizer.Library.Pages
             {
                 await SaveCredential();
             }
-            else if (!string.IsNullOrWhiteSpace(DevOpsCredential.Username) && !string.IsNullOrWhiteSpace(DevOpsCredential.Password)
-                && !string.IsNullOrWhiteSpace(DevOpsCredential.Organization) && !string.IsNullOrWhiteSpace(DevOpsCredential.Project))
+            else if (!string.IsNullOrWhiteSpace(DevOpsCredential.AccessToken) && !string.IsNullOrWhiteSpace(DevOpsCredential.Organization)
+                && !string.IsNullOrWhiteSpace(DevOpsCredential.Project))
             {
                 await SubmitCredential();
             }
@@ -86,26 +86,8 @@ namespace ScrumStorySizer.Library.Pages
         protected async override Task OnInitializedAsync()
         {
             // Load settings from localStorage
-            string scrumMasterSettings = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "devops-auth");
-            string teamMemberSettings = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "team-member-settings");
-            if (!string.IsNullOrWhiteSpace(scrumMasterSettings))
-            {
-                try
-                {
-                    scrumMasterSettings = Encoding.UTF8.GetString(Convert.FromBase64String(scrumMasterSettings));
-                    DevOpsCredential = JsonSerializer.Deserialize<DevOpsCredential>(scrumMasterSettings) ?? new();
-                }
-                catch { }
-            }
-            if (!string.IsNullOrWhiteSpace(teamMemberSettings))
-            {
-                try
-                {
-                    teamMemberSettings = Encoding.UTF8.GetString(Convert.FromBase64String(teamMemberSettings));
-                    TeamMemberSettings = JsonSerializer.Deserialize<TeamMemberSettings>(teamMemberSettings) ?? new();
-                }
-                catch { }
-            }
+            DevOpsCredential = await Helper.GetScrumMasterSettings<DevOpsCredential>(JSRuntime);
+            TeamMemberSettings = await Helper.GetTeamMemberSettings(JSRuntime);
         }
     }
 }

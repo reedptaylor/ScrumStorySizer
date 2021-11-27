@@ -1,14 +1,9 @@
-﻿using ScrumStorySizer.Library.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Components;
+using ScrumStorySizer.Library.Models;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components;
 
 namespace ScrumStorySizer.Library.Services
 {
@@ -17,9 +12,9 @@ namespace ScrumStorySizer.Library.Services
         private readonly HttpClient _httpClient;
         private readonly DevOpsCredential _credential;
 
-        private readonly List<string> _tagsToAdd = new() { "Planning" };
-        private readonly List<string> _tagsToRemove = new() { "Ready2Groom" };
-        private readonly string _newState = "Approved";
+        private readonly List<string> _tagsToAdd;
+        private readonly List<string> _tagsToRemove;
+        private readonly string _newState;
 
         public DevOpsClient(HttpClient httpClient, NavigationManager navigationManager, DevOpsCredential credential)
         {
@@ -29,6 +24,10 @@ namespace ScrumStorySizer.Library.Services
             // Set address using Yarp Proxy
             _httpClient.BaseAddress = new Uri($"{navigationManager.BaseUri}devops/{credential.Organization}/{credential.Project}/_apis/");
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", _credential.BasicAuth);
+
+            _tagsToAdd = credential.TagsToAdd ?? new();
+            _tagsToRemove = credential.TagsToRemove ?? new();
+            _newState = credential.NewState;
         }
 
         public async Task TestAuthentication()
@@ -56,12 +55,16 @@ namespace ScrumStorySizer.Library.Services
             workItem.Id = id;
             fields.TryGetProperty("System.Title", out JsonElement titleElement);
             workItem.Title = GetJsonValue(titleElement);
-            fields.TryGetProperty("System.Description", out JsonElement descriptionElement);
-            workItem.Description = GetJsonValue(descriptionElement);
-            fields.TryGetProperty("Microsoft.VSTS.Common.AcceptanceCriteria", out JsonElement criteriaElement);
-            workItem.AcceptanceCriteria = GetJsonValue(criteriaElement);
             fields.TryGetProperty("System.Tags", out JsonElement tagsElement);
-            workItem.Tags = GetJsonValue(tagsElement).Split(";").Select(tag => tag?.Trim()) ?? Array.Empty<string>();
+            workItem.Tags = GetJsonValue(tagsElement).Split(";", StringSplitOptions.RemoveEmptyEntries).Select(tag => tag?.Trim()) ?? Array.Empty<string>();
+
+            if (_credential.ShowDescription)
+            {
+                fields.TryGetProperty("System.Description", out JsonElement descriptionElement);
+                workItem.Description = GetJsonValue(descriptionElement);
+                fields.TryGetProperty("Microsoft.VSTS.Common.AcceptanceCriteria", out JsonElement criteriaElement);
+                workItem.AcceptanceCriteria = GetJsonValue(criteriaElement);
+            }
 
             return workItem;
         }
@@ -80,10 +83,10 @@ namespace ScrumStorySizer.Library.Services
             };
 
             if (!string.IsNullOrWhiteSpace(_newState))
-                request.Add(new { op = "add", path = "/fields/System.State", value = _newState});
+                request.Add(new { op = "add", path = "/fields/System.State", value = _newState });
 
             if (_tagsToAdd?.Any() == true || _tagsToRemove?.Any() == true)
-                request.Add(new { op = "replace", path = "/fields/System.Tags", value = tagList});
+                request.Add(new { op = "replace", path = "/fields/System.Tags", value = tagList });
 
             string requestBody = JsonSerializer.Serialize(request);
             var workItemResponse = await _httpClient.PatchAsync($"wit/workitems/{id}?api-version=6.0", new StringContent(requestBody, Encoding.UTF8, "application/json-patch+json"));

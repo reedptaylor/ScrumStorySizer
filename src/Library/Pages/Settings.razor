@@ -2,6 +2,38 @@
 
 <div class="card bg-dark">
     <div class="card-body">
+        <h5 class="card-title">Team Member Settings</h5>
+        <hr />
+        <EditForm Model="TeamMemberSettings" OnValidSubmit="SaveTeamMemberSettings">
+            <div class="row">
+                <div class="col-md col-12">
+                    <label style="width:100%" for="TeamMemberSettings.DefaultDisplayName">Default Display Name</label>
+                    <input class="form-control" style="max-width:600px;" type="text"
+                        id="TeamMemberSettings.DefaultDisplayName"
+                        @bind-value="TeamMemberSettings.DefaultDisplayName" />
+                </div>
+                <div class="col-md col-12" title="Confetti is displayed when all users vote the same.">
+                    <div class="d-flex h-100 w-100 pt-md-0 pt-4">
+                        <label class="mt-auto ml-auto" for="TeamMemberSettings.ShowConfetti">Confetti Enabled</label>
+                        <label class="switch ml-3 mr-auto mt-auto">
+                            <InputCheckbox type="checkbox" id="TeamMemberSettings.ShowConfetti"
+                                @bind-Value="TeamMemberSettings.ShowConfetti" />
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button type="submit" class="btn btn-primary mt-3">Save</button>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+<div class="card bg-dark">
+    <div class="card-body">
         <h5 class="card-title">Scrum Master Settings</h5>
         <hr />
         <EditForm Model="DevOpsCredential" OnValidSubmit="SubmitCredential">
@@ -14,24 +46,19 @@
                 </label>
             </div>
             <div class="row">
-                <div class="col">
+                <div class="col-md col-12">
                     <label style="width:100%" for="DevOpsCredential.Organization">Organization</label>
                     <input class="form-control" style="max-width:600px;" type="text" id="DevOpsCredential.Organization"
                         disabled="@(!DevOpsCredential.IsEnabled)" @bind-value="DevOpsCredential.Organization" />
                 </div>
-                <div class="col">
+                <div class="col-md col-12">
                     <label style="width:100%" for="DevOpsCredential.Project">Project</label>
                     <input class="form-control" style="max-width:600px;" type="text" id="DevOpsCredential.Project"
                         disabled="@(!DevOpsCredential.IsEnabled)" @bind-value="DevOpsCredential.Project" />
                 </div>
             </div>
             <div class="row">
-                <div class="col">
-                    <label style="width:100%" for="DevOpsCredential.Username">Username</label>
-                    <input class="form-control" style="max-width:600px;" type="text" id="DevOpsCredential.Username"
-                        disabled="@(!DevOpsCredential.IsEnabled)" @bind-value="DevOpsCredential.Username" />
-                </div>
-                <div class="col">
+                <div class="col-md col-12">
                     <div class="d-flex">
                         <label for="DevOpsCredential.Password">Access Token (PAT)</label>
                         <i class="fa fa-info-circle p-1" style="cursor:pointer;" @onclick="ShowPatHelp"
@@ -44,35 +71,61 @@
                     </div>
                     <input class="form-control" style="max-width:600px;" type="@(showCredential ? "text" : "password")"
                         id="DevOpsCredential.Password" disabled="@(!DevOpsCredential.IsEnabled)"
-                        @bind-value="DevOpsCredential.Password" />
+                        @bind-value="DevOpsCredential.AccessToken" />
+                </div>
+                <div class="col-md col-12">
+                    <div class="d-flex h-100 w-100 pt-md-0 pt-4">
+                        <label class="mt-auto ml-auto" for="DevOpsCredential.ShowDescription">Show Work Item
+                            Description</label>
+                        <label class="switch ml-3 mr-auto mt-auto">
+                            <InputCheckbox type="checkbox" id="DevOpsCredential.ShowDescription"
+                                @bind-Value="DevOpsCredential.ShowDescription" disabled="@(!DevOpsCredential.IsEnabled)" />
+                            <span class="slider round@(DevOpsCredential.IsEnabled ? string.Empty : " disabled")"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <h6 class="card-title">Advanced</h6>
+            <div class="row">
+                <div class="col-md col-12">
+                    <div class="d-flex">
+                        <label for="DevOpsCredential.SerialTagsToAdd">Tags To Add</label>
+                        <i class="fa fa-info-circle p-1" style="cursor:pointer;"
+                            @onclick="() => _messagePopUp.ShowMessage(tagsToAddHelpText)"
+                            title="@tagsToAddHelpText"></i>
+                    </div>
+                    <input class="form-control" style="max-width:600px;" type="text"
+                        id="DevOpsCredential.SerialTagsToAdd" disabled="@(!DevOpsCredential.IsEnabled)"
+                        @bind-value="DevOpsCredential.SerialTagsToAdd" />
+                </div>
+                <div class="col-md col-12">
+                    <div class="d-flex">
+                        <label for="DevOpsCredential.SerialTagsToRemove">Tags To Remove</label>
+                        <i class="fa fa-info-circle p-1" style="cursor:pointer;"
+                            @onclick="() => _messagePopUp.ShowMessage(tagsToRemoveHelpText)"
+                            title="@tagsToRemoveHelpText"></i>
+                    </div>
+                    <input class="form-control" style="max-width:600px;" type="text"
+                        id="DevOpsCredential.SerialTagsToRemove" disabled="@(!DevOpsCredential.IsEnabled)"
+                        @bind-value="DevOpsCredential.SerialTagsToRemove" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-12">
+                    <div class="d-flex">
+                        <label for="DevOpsCredential.NewState">New Work Item State</label>
+                        <i class="fa fa-info-circle p-1" style="cursor:pointer;"
+                            @onclick="() => _messagePopUp.ShowMessage(stateHelpText)" title="@stateHelpText"></i>
+                    </div>
+                    <input class="form-control" style="max-width:600px;" type="text" id="DevOpsCredential.NewState"
+                        disabled="@(!DevOpsCredential.IsEnabled)" @bind-value="DevOpsCredential.NewState" />
                 </div>
             </div>
             <div class="row">
                 <div class="col">
                     <button type="submit" class="btn btn-primary mt-3"
                         disabled="@(!DevOpsCredential.IsEnabled)">Save</button>
-                </div>
-            </div>
-        </EditForm>
-    </div>
-</div>
-
-<div class="card bg-dark">
-    <div class="card-body">
-        <h5 class="card-title">Team Member Settings</h5>
-        <hr />
-        <EditForm Model="TeamMemberSettings" OnValidSubmit="SaveTeamMemberSettings">
-            <div class="row">
-                <div class="col">
-                    <label style="width:100%" for="TeamMemberSettings.DefaultDisplayName">Default Display Name</label>
-                    <input class="form-control" style="max-width:600px;" type="text"
-                        id="TeamMemberSettings.DefaultDisplayName"
-                        @bind-value="TeamMemberSettings.DefaultDisplayName" />
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <button type="submit" class="btn btn-primary mt-3">Save</button>
                 </div>
             </div>
         </EditForm>

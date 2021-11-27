@@ -1,14 +1,9 @@
-using System.Net.Http;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using ScrumStorySizer.Library.Components;
 using ScrumStorySizer.Library.Enums;
 using ScrumStorySizer.Library.Models;
 using ScrumStorySizer.Library.Services;
-using System;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace ScrumStorySizer.Library.Pages
 {
@@ -21,7 +16,8 @@ namespace ScrumStorySizer.Library.Pages
         [Inject] protected NavigationManager NavigationManager { get; set; }
         [Inject] protected IVotingService PokerVote { get; set; }
 
-        private DevOpsCredential DevOpsCredential { get; set; }
+        private DevOpsCredential DevOpsCredential { get; set; } = new();
+        private TeamMemberSettings TeamMemberSettings { get; set; } = new();
         private DevOpsStory _devOpsStoryRef;
 
         protected bool ShowResultsDisabled => PokerVote.StorySizeVotes.Count == 0 || PokerVote.ShowVotes;
@@ -102,19 +98,8 @@ namespace ScrumStorySizer.Library.Pages
         protected async override Task OnInitializedAsync()
         {
             PokerVote.OnChange += OnUpdate;
-
-            // Load credential from local storage
-            string scrumMasterSettings = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "devops-auth");
-            if (!string.IsNullOrWhiteSpace(scrumMasterSettings))
-            {
-                try
-                {
-                    scrumMasterSettings = Encoding.UTF8.GetString(Convert.FromBase64String(scrumMasterSettings));
-                    DevOpsCredential = JsonSerializer.Deserialize<DevOpsCredential>(scrumMasterSettings) ?? new();
-                    OnUpdate();
-                }
-                catch { }
-            }
+            DevOpsCredential = await Helper.GetScrumMasterSettings<DevOpsCredential>(JSRuntime);
+            TeamMemberSettings = await Helper.GetTeamMemberSettings(JSRuntime);
         }
 
         public void Dispose()

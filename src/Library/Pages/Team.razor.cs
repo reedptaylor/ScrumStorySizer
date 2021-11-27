@@ -3,10 +3,6 @@ using Microsoft.JSInterop;
 using ScrumStorySizer.Library.Enums;
 using ScrumStorySizer.Library.Models;
 using ScrumStorySizer.Library.Services;
-using System;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace ScrumStorySizer.Library.Pages
 {
@@ -22,6 +18,8 @@ namespace ScrumStorySizer.Library.Pages
             NameDisabled = true; // Don't allow the user to change their name after voting
             jumboclass = "jumbo-shrink"; // Shrink jumbo after voting
         }
+
+        private TeamMemberSettings TeamMemberSettings { get; set; } = new();
 
         private string jumboclass = "";
 
@@ -41,19 +39,11 @@ namespace ScrumStorySizer.Library.Pages
             });
         }
 
-        protected async override Task OnInitializedAsync() // Load user defaults/settings
+        protected async override Task OnInitializedAsync()
         {
             PokerVote.OnChange += OnUpdate;
-            string teamMemberSettings = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "team-member-settings");
-            if (!string.IsNullOrWhiteSpace(teamMemberSettings))
-            {
-                try
-                {
-                    teamMemberSettings = Encoding.UTF8.GetString(Convert.FromBase64String(teamMemberSettings));
-                    Username = (JsonSerializer.Deserialize<TeamMemberSettings>(teamMemberSettings) ?? new()).DefaultDisplayName;
-                }
-                catch { }
-            }
+            TeamMemberSettings = await Helper.GetTeamMemberSettings(JSRuntime);
+            Username = TeamMemberSettings.DefaultDisplayName;
         }
 
         public void Dispose()

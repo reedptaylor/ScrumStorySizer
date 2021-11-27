@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using ScrumStorySizer.Library.Models;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.AspNetCore.Components;
-using System.Threading.Tasks;
+using ScrumStorySizer.Library.Models;
 
 namespace ScrumStorySizer.Library.Services
 {
@@ -98,6 +95,7 @@ namespace ScrumStorySizer.Library.Services
         public void UpdateWorkItem(WorkItem workItem)
         {
             if (workItem is null) workItem = new();
+            workItem.TruncateObject(); // Truncate the object if it will be to big to send over SignalR
             HubConnection.SendAsync(Constants.HUB_COMMAND_UPDATE_WORK_ITEM, workItem);
         }
 
