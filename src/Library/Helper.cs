@@ -47,25 +47,23 @@ namespace ScrumStorySizer.Library
 
         public static MarkupString ConvertToMarkupString(this string html) => new MarkupString(html);
 
-        public static string SanitizeHTML(this string html, bool allowCss = false)
+        public static string SanitizeHTML(this string html, bool allowCss = false) // Default allowCss to false to help display better in app and trim down on total size
         {
             if (string.IsNullOrWhiteSpace(html))
                 return string.Empty;
 
-            HtmlSanitizer sanitizer = new(allowedCssProperties: allowCss ? null : new List<string>());
+            HtmlSanitizer sanitizer = new(allowedCssProperties: allowCss ? null : new List<string>()); // Use GANSS library to sanitize HTML to prevent XSS attacks
             return sanitizer.Sanitize(html);
         }
 
         public static string LimitByteLength(this string message, int remainingByteSize) // Helper method to get a string with a maximum byte length
         {
             if (string.IsNullOrWhiteSpace(message) || remainingByteSize <= 0)
-            {
                 return string.Empty;
-            }
 
             int messageByteSize = Encoding.UTF8.GetByteCount(message);
 
-            if (messageByteSize > remainingByteSize)
+            if (messageByteSize > remainingByteSize) // Message size too large so we need to trim it
             {
                 Encoder encoder = Encoding.UTF8.GetEncoder();
                 byte[] buffer = new byte[remainingByteSize];
@@ -73,7 +71,7 @@ namespace ScrumStorySizer.Library
                 message = Encoding.UTF8.GetString(buffer, 0, messageByteSize);
             }
 
-            remainingByteSize -= messageByteSize;
+            remainingByteSize -= messageByteSize; // Update remaining byte size
             return message;
         }
     }

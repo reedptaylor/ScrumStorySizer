@@ -95,7 +95,7 @@ namespace ScrumStorySizer.Library.Services
         public void UpdateWorkItem(WorkItem workItem)
         {
             if (workItem is null) workItem = new();
-            workItem.TrimObject();
+            workItem.TruncateObject(); // Truncate the object if it will be to big to send over SignalR
             HubConnection.SendAsync(Constants.HUB_COMMAND_UPDATE_WORK_ITEM, workItem);
         }
 

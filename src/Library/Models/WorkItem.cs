@@ -26,11 +26,11 @@
 
         public IEnumerable<string> Tags { get; set; }
 
-        public void TrimObject()
+        public void TruncateObject()
         {
             int remainingSize = Constants.MAX_SIGNALR_SIZE;
 
-            Title = Title.LimitByteLength(remainingSize);
+            Title = Title.LimitByteLength(remainingSize); // Strings ordered in order of importance
             _description = _description.LimitByteLength(remainingSize);
             _acceptanceCriteria = _acceptanceCriteria.LimitByteLength(remainingSize);
         }
