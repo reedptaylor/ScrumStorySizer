@@ -13,6 +13,7 @@ namespace ScrumStorySizer.Library.Components
         protected override void OnInitialized()
         {
             PokerVote.OnChange += OnUpdate;
+            OnUpdate();
         }
 
         public void Dispose()
