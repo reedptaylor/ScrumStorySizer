@@ -34,6 +34,7 @@ namespace ScrumStorySizer.Library.Components
             {
                 _spinner.Set(true);
                 PokerVote.UpdateWorkItem(await workItemClient.GetWorkItem(_workItemId)); // Send value to all connected clients
+                PokerVote.ClearStorySizeVotes();
                 _spinner.Set(false);
             }
             catch (UnauthorizedAccessException)
