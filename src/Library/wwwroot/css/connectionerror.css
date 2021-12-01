@@ -1,5 +1,5 @@
 ﻿.modal {
-    display: none;
+    display: block;
     position: fixed;
     z-index: 1;
     left: 0;
@@ -8,10 +8,6 @@
     height: 100%;
     background-color: rgba(0,0,0,0.4);
 }
-
-    .modal.show-modal {
-        display: block;
-    }
 
     .modal .modal-content {
         background-color: #008080;
