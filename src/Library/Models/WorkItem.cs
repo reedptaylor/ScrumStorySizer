@@ -30,9 +30,9 @@
         {
             int remainingSize = Constants.MAX_SIGNALR_SIZE;
 
-            Title = Title.LimitByteLength(remainingSize); // Strings ordered in order of importance
-            _description = _description.LimitByteLength(remainingSize);
-            _acceptanceCriteria = _acceptanceCriteria.LimitByteLength(remainingSize);
+            Title = Title.LimitByteLength(ref remainingSize); // Strings ordered in order of importance
+            _description = _description.LimitByteLength(ref remainingSize);
+            _acceptanceCriteria = _acceptanceCriteria.LimitByteLength(ref remainingSize);
         }
 
         private string _description;
