@@ -56,7 +56,7 @@ namespace ScrumStorySizer.Library
             return sanitizer.Sanitize(html);
         }
 
-        public static string LimitByteLength(this string message, int remainingByteSize) // Helper method to get a string with a maximum byte length
+        public static string LimitByteLength(this string message, ref int remainingByteSize) // Helper method to get a string with a maximum byte length
         {
             if (string.IsNullOrWhiteSpace(message) || remainingByteSize <= 0)
                 return string.Empty;

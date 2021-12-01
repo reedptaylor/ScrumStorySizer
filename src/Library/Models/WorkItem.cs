@@ -6,23 +6,9 @@
 
         public string Title { get; set; }
 
-        public string Description
-        {
-            get => _description;
-            set
-            {
-                _description = value.SanitizeHTML();
-            }
-        }
+        public string Description { get; set; }
 
-        public string AcceptanceCriteria
-        {
-            get => _acceptanceCriteria;
-            set
-            {
-                _acceptanceCriteria = value.SanitizeHTML();
-            }
-        }
+        public string AcceptanceCriteria { get; set; }
 
         public IEnumerable<string> Tags { get; set; }
 
@@ -30,13 +16,10 @@
         {
             int remainingSize = Constants.MAX_SIGNALR_SIZE;
 
-            Title = Title.LimitByteLength(remainingSize); // Strings ordered in order of importance
-            _description = _description.LimitByteLength(remainingSize);
-            _acceptanceCriteria = _acceptanceCriteria.LimitByteLength(remainingSize);
+            Title = Title.LimitByteLength(ref remainingSize); // Strings ordered in order of importance
+            Description = Description.SanitizeHTML().LimitByteLength(ref remainingSize);
+            AcceptanceCriteria = AcceptanceCriteria.SanitizeHTML().LimitByteLength(ref remainingSize);
         }
-
-        private string _description;
-        private string _acceptanceCriteria;
     }
 }
 

@@ -12,6 +12,6 @@ namespace ScrumStorySizer.Library
         public const string HUB_COMMAND_CANCEL_TIMER = nameof(VotingService.CancelTimer);
         public const string HUB_COMMAND_TIME_REMAINING = nameof(VotingService.TimeRemaining);
 
-        public const int MAX_SIGNALR_SIZE = 30000; // Max size for a SignalR message is 32KB so we have a 2KB buffer for the JSON payload
+        public const int MAX_SIGNALR_SIZE = 254000; // Max size for a SignalR message is 256KB (manually set) so we have a 2KB buffer for the JSON payload
     }
 }

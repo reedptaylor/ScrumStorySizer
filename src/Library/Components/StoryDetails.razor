@@ -5,24 +5,24 @@
     </div>
 </div>
 
-@if (!string.IsNullOrWhiteSpace(PokerVote.WorkItem?.Description))
+@if (!string.IsNullOrWhiteSpace(_description.Value))
 {
     <hr />
     <div class="row">
         <div class="col">
             <h6 class="card-title">Description</h6>
-            <div>@(PokerVote.WorkItem.Description.ConvertToMarkupString())</div>
+            <div>@_description</div>
         </div>
     </div>
 }
 
-@if (!string.IsNullOrWhiteSpace(PokerVote.WorkItem?.AcceptanceCriteria))
+@if (!string.IsNullOrWhiteSpace(_acceptanceCriteria.Value))
 {
     <hr />
     <div class="row">
         <div class="col">
             <h6 class="card-title">Acceptance Criteria</h6>
-            <div>@(PokerVote.WorkItem.AcceptanceCriteria.ConvertToMarkupString())</div>
+            <div>@_acceptanceCriteria</div>
         </div>
     </div>
 }

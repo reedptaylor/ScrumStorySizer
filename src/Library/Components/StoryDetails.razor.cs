@@ -7,6 +7,9 @@ namespace ScrumStorySizer.Library.Components
     {
         [Inject] IVotingService PokerVote { get; set; }
 
+        private MarkupString _description = new();
+        private MarkupString _acceptanceCriteria = new();
+
         protected override void OnInitialized()
         {
             PokerVote.OnChange += OnUpdate;
@@ -19,6 +22,8 @@ namespace ScrumStorySizer.Library.Components
 
         void OnUpdate()
         {
+            _description = PokerVote.WorkItem?.Description.SanitizeHTML().ConvertToMarkupString() ?? new();
+            _acceptanceCriteria = PokerVote.WorkItem?.AcceptanceCriteria.SanitizeHTML().ConvertToMarkupString() ?? new();
             InvokeAsync(StateHasChanged);
         }
     }
