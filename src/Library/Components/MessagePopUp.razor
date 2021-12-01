@@ -1,7 +1,7 @@
 ﻿@if (showing)
 {
     <div id="message-modal" tabindex="0" class="modal">
-        <div class="modal-content d-block">
+        <div class="modal-content d-flex">
             @if (isMarkUp)
             {
                 <div id="message-modal-body" class="d-inline-block">@markupMessage</div>
@@ -10,7 +10,7 @@
             {
                 <div id="message-modal-body" class="d-inline-block">@message</div>
             }
-            <div class="text-right dismiss d-inline-block pl-2" @onclick="() => showing = false">Dismiss</div>
+            <div class="text-right dismiss d-inline-block pt-2" @onclick="() => showing = false">Dismiss</div>
         </div>
     </div>
 }
