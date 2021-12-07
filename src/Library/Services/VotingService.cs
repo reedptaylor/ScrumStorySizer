@@ -63,6 +63,12 @@ namespace ScrumStorySizer.Library.Services
                 TimeLeft = seconds;
                 NotifyDataChanged();
             });
+
+            HubConnection.On<int>(Constants.HUB_UPDATE_CONNECTED_CLIENTS, (count) =>
+            {
+                ConnectedClients = count;
+                NotifyDataChanged();
+            });
         }
 
         // In Memory State Data
@@ -71,6 +77,8 @@ namespace ScrumStorySizer.Library.Services
         public List<SizeVote> StorySizeVotes { get; private set; } = new List<SizeVote>();
 
         public bool ShowVotes { get; private set; }
+
+        public int ConnectedClients { get; private set; }
 
         public int TimeLeft { get; set; } = 0;
 
