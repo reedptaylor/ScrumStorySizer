@@ -1,3 +1,26 @@
 @page "/about"
 
-Current Connected Users: @VotingService.ConnectedClients
+<div class="card bg-dark">
+    <div class="card-body">
+        <h5 class="card-title">Latest Release</h5>
+        <hr />
+        <h6>Version 2.3</h6>
+        <ul>
+            <li>Added new about page</li>
+            <ul>
+                <li>Add newest version info</li>
+                <li>Add link to list of versions</li>
+                <li>Add dashbaord for currently connected users</li>
+            </ul>
+        </ul>
+        <p><a href="/release-notes" target="_blank">Click Here</a> for a list of previous releases.</p>
+    </div>
+</div>
+
+<div class="card bg-dark">
+    <div class="card-body">
+        <h5 class="card-title">Stats</h5>
+        <hr />
+        Current Connected Users: @VotingService.ConnectedClients
+    </div>
+</div>

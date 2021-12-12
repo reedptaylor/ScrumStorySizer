@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.ResponseCompression;
+﻿using Markdig;
+using Microsoft.AspNetCore.ResponseCompression;
 using ScrumStorySizer.Server;
 using ScrumStorySizer.Server.Hubs;
 
@@ -44,6 +45,41 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 app.UseRouting();
+
+app.MapGet("release-notes", async (context) => // Map release notes endpoint
+{
+    if (!bool.TryParse(context.Request.Query["markdown"], out bool rawMarkdown))
+        rawMarkdown = false;
+
+    string path = Environment.GetEnvironmentVariable("RELEASE_NOTES_PATH"); // Set path from environment if running from Docker
+    if (string.IsNullOrEmpty(path))
+        path = "../../release-notes";
+
+    // List<Task<string>> fileTasks = new();TODO
+    // System.IO.Directory.GetFiles($"{path}/versions")
+    //     .OrderByDescending(f => f)
+    //     .ToList()
+    //     .ForEach(async f => 
+    //     {
+    //         fileTasks.Add(System.IO.File.ReadAllTextAsync(f));
+    //     });
+
+    // await Task.WhenAll(fileTasks);
+    string markdown = await System.IO.File.ReadAllTextAsync($"{path}/release-notes.md");
+
+    if (rawMarkdown)
+    {
+        context.Response.ContentType = "text/markdown";
+        await context.Response.WriteAsync(markdown); // Return raw markdown
+    }
+    else
+    {
+        context.Response.ContentType = "text/html"; // Set to display page as HTML
+        string htmlTemplate = await System.IO.File.ReadAllTextAsync($"{path}/release-notes-template.html");
+        await context.Response.WriteAsync(string.Format(htmlTemplate, Markdown.ToHtml(markdown))); // Convert markdown to html and inject into template
+    }
+
+});
 
 app.MapRazorPages();
 app.MapControllers();
