@@ -300,6 +300,13 @@ input:checked + .slider:before {
           cursor: pointer;
       }
 
+.release-notes h2 {
+  font-size: 1.25rem;
+}
+
+.release-notes h3 {
+  font-size: 1rem;
+}
 
 @media (max-width: 767.98px) {
   .display-4 {

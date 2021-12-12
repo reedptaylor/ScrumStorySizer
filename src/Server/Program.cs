@@ -48,29 +48,49 @@ app.UseRouting();
 
 app.MapGet("release-notes", async (context) => // Map release notes endpoint
 {
-    if (!bool.TryParse(context.Request.Query["markdown"], out bool rawMarkdown))
-        rawMarkdown = false;
+    string format = context.Request.Query["format"];
+    string specificVersion = context.Request.Query["version"];
 
     string path = Environment.GetEnvironmentVariable("RELEASE_NOTES_PATH"); // Set path from environment if running from Docker
     if (string.IsNullOrEmpty(path))
         path = "../../release-notes";
 
-    // List<Task<string>> fileTasks = new();TODO
-    // System.IO.Directory.GetFiles($"{path}/versions")
-    //     .OrderByDescending(f => f)
-    //     .ToList()
-    //     .ForEach(async f => 
-    //     {
-    //         fileTasks.Add(System.IO.File.ReadAllTextAsync(f));
-    //     });
+    List<Task<string>> fileTasks = new();
+    IEnumerable<string> files = System.IO.Directory.GetFiles($"{path}/versions").OrderByDescending(f => f); // Get all version file paths 
 
-    // await Task.WhenAll(fileTasks);
-    string markdown = await System.IO.File.ReadAllTextAsync($"{path}/release-notes.md");
+    string markdown;
+    if (!string.IsNullOrWhiteSpace(specificVersion))
+    {
+        if (specificVersion.Equals("latest", StringComparison.InvariantCultureIgnoreCase)) // Get only latest version
+            markdown = await System.IO.File.ReadAllTextAsync(files.FirstOrDefault());
+        else if (files.Any(f => f.EndsWith($"{specificVersion}.md"))) // Get specific version
+            markdown = await System.IO.File.ReadAllTextAsync(files.FirstOrDefault(f => f.EndsWith($"{specificVersion}.md")));
+        else // Version not found
+        {
+            context.Response.StatusCode = 404;
+            await context.Response.WriteAsync("Release notes not found.");
+            return;
+        }
+    }
+    else
+    {
+        foreach (string file in files) // Get all versions
+        {
+            fileTasks.Add(System.IO.File.ReadAllTextAsync(file));
+        }
+        await Task.WhenAll(fileTasks);
+        markdown = fileTasks.Select(t => t.Result).Aggregate((a, b) => a + Environment.NewLine + Environment.NewLine + b)?.Trim();
+    }
 
-    if (rawMarkdown)
+    if ((format?.Equals("markdown", StringComparison.InvariantCultureIgnoreCase) ?? false) || (format?.Equals("md", StringComparison.InvariantCultureIgnoreCase) ?? false))
     {
         context.Response.ContentType = "text/markdown";
         await context.Response.WriteAsync(markdown); // Return raw markdown
+    }
+    else if (format?.Equals("simple", StringComparison.InvariantCultureIgnoreCase) ?? false) // Use this about page
+    {
+        context.Response.ContentType = "text/html"; // Set to display page as HTML
+        await context.Response.WriteAsync(Markdown.ToHtml(markdown)); // Convert markdown to html
     }
     else
     {
@@ -78,7 +98,6 @@ app.MapGet("release-notes", async (context) => // Map release notes endpoint
         string htmlTemplate = await System.IO.File.ReadAllTextAsync($"{path}/release-notes-template.html");
         await context.Response.WriteAsync(string.Format(htmlTemplate, Markdown.ToHtml(markdown))); // Convert markdown to html and inject into template
     }
-
 });
 
 app.MapRazorPages();
