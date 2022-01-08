@@ -1,4 +1,5 @@
-﻿using Markdig;
+﻿using System.Diagnostics;
+using Markdig;
 using Microsoft.AspNetCore.ResponseCompression;
 using ScrumStorySizer.Server;
 using ScrumStorySizer.Server.Hubs;
@@ -99,6 +100,32 @@ app.MapGet("release-notes", async (context) => // Map release notes endpoint
         await context.Response.WriteAsync(string.Format(htmlTemplate, Markdown.ToHtml(markdown))); // Convert markdown to html and inject into template
     }
 });
+
+app.MapGet("uptime", async (context) => // Map uptime endpoint
+{
+    var process = new Process()
+    {
+        StartInfo = new ProcessStartInfo
+        {
+            FileName = "uptime",
+            Arguments = "-s",
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            UseShellExecute = false,
+            CreateNoWindow = true,
+        }
+    };
+    process.Start();
+    string output = process.StandardOutput.ReadToEnd();
+    string error = process.StandardError.ReadToEnd();
+    process.WaitForExit();
+
+    if (string.IsNullOrEmpty(error) && DateTime.TryParse(output, out DateTime startTime))
+        await context.Response.WriteAsync((DateTime.Now - startTime).ToString("g"));
+    else
+        await context.Response.WriteAsync("N/A");
+});
+
 
 app.MapRazorPages();
 app.MapControllers();
