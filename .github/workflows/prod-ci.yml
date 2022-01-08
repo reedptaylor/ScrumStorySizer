@@ -20,13 +20,16 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Set Version Number
+        run: echo "VERSION_NUMBER=$(ls *.md | sort -r | head -1 | sed 's/.md//g')" >> $GITHUB_ENV
+        working-directory: ./release-notes/versions
       - name: Build and Push
         uses: docker/build-push-action@v2
         with:
           context: .
           file: src/Server/Dockerfile
           push: true
-          tags: reedptaylor/scrumstorysizer:latest,reedptaylor/scrumstorysizer:${{ github.run_id }}
+          tags: reedptaylor/scrumstorysizer:latest,reedptaylor/scrumstorysizer:${{ env.VERSION_NUMBER }}
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
