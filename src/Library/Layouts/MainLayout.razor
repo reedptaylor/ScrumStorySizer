@@ -1,14 +1,23 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="main">
-    <div class="top-row px-4">
-        <h5 style="margin-bottom:0">ScrumStorySizer</h5>
-        <div class="ml-auto nav-menu">
-            <a href="/" class="pr-4">Team</a>
-            <a href="/master" class="pr-4">Scrum Master</a>
-            <a href="/settings">Settings</a>
+    <nav class="navbar sticky-top navbar-expand-md navbar-dark bg-custom">
+        <a class="navbar-brand" href="/">
+            <img src="_content/ScrumStorySizer.Library/logo.png" width="30" height="30" class="d-inline-block align-top rounded mr-1" alt="logo">
+            ScrumStorySizer
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+            aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav ml-auto">
+                <a class="nav-item nav-link @(CurrentPage == string.Empty ? "active" : string.Empty)" href="/">Team</a>
+                <a class="nav-item nav-link @(CurrentPage == "master" ? "active" : string.Empty)" href="/master">Scrum Master</a>
+                <a class="nav-item nav-link @(CurrentPage == "settings" ? "active" : string.Empty)" href="/settings">Settings</a>
+            </div>
         </div>
-    </div>
+    </nav>
 
     <div class="content px-4">
         @Body
