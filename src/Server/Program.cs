@@ -108,8 +108,8 @@ app.MapGet("uptime", async (context) => // Map uptime endpoint
     {
         StartInfo = new ProcessStartInfo
         {
-            FileName = "uptime",
-            Arguments = "-s",
+            FileName = "stat",
+            Arguments = "-c %y /proc/1",
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             UseShellExecute = false,
@@ -122,7 +122,7 @@ app.MapGet("uptime", async (context) => // Map uptime endpoint
     process.WaitForExit();
 
     if (string.IsNullOrEmpty(error) && DateTime.TryParse(output, out DateTime startTime))
-        await context.Response.WriteAsync((DateTime.Now - startTime).ToRelativeTimeStamp());
+        await context.Response.WriteAsync((DateTime.UtcNow - startTime).ToRelativeTimeStamp());
     else
         await context.Response.WriteAsync("N/A");
 });
