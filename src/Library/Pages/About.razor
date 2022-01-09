@@ -6,7 +6,7 @@
         <hr />
         <div class="release-notes">@LatestVersion</div>
         <hr />
-        <a href="/release-notes" target="_blank">Click here for a list of previous releases.</a>
+        <a href="/release-notes" target="_blank">Click here for a list of previous releases</a>
     </div>
 </div>
 
@@ -14,7 +14,15 @@
     <div class="card-body">
         <h5 class="card-title">Stats</h5>
         <hr />
-        <div>Current Connected Users: @VotingService.ConnectedClients</div>
-        <div>System Uptime: @Uptime</div>
+        <div class="row">
+            <div class="col-md col-12">
+                <label>Current Connected Users</label>
+                <div>@VotingService.ConnectedClients</div>
+            </div>
+            <div class="col-md col-12 pt-md-0 pt-2">
+                <label>System Uptime</label>
+                <div>@Uptime</div>
+            </div>
+        </div>
     </div>
 </div>
