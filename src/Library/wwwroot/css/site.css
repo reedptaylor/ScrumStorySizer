@@ -7,9 +7,25 @@ body {
   color: white;
 }
 
-a,
+a:not(.nav-link, .navbar-brand, .btn),
 .btn-link {
   color: lightgrey !important;
+}
+
+.navbar.bg-custom {
+  background-color: #212529;
+}
+
+.navbar .navbar-brand {
+  font-weight: 500;
+}
+
+.navbar .nav-link:not(.active) {
+  color: lightgrey;
+}
+
+.navbar .nav-link:hover {
+  text-decoration: underline;
 }
 
 .form-control {
@@ -271,7 +287,7 @@ input:checked + .slider:before {
 .modal {
   display: block;
   position: fixed;
-  z-index: 1;
+  z-index: 99999;
   left: 0;
   top: 0;
   width: 100%;
@@ -300,6 +316,13 @@ input:checked + .slider:before {
           cursor: pointer;
       }
 
+.release-notes h2 {
+  font-size: 1.25rem;
+}
+
+.release-notes h3 {
+  font-size: 1rem;
+}
 
 @media (max-width: 767.98px) {
   .display-4 {

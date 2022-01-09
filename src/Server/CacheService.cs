@@ -11,5 +11,7 @@ namespace ScrumStorySizer.Server
         public List<SizeVote> StorySizeVotes { get; set; } = new List<SizeVote>();
 
         public bool ShowVotes { get; set; }
+
+        public int ConnectedClients { get; set; }
     }
 }

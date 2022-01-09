@@ -12,6 +12,7 @@ namespace ScrumStorySizer.Library.Services
         WorkItem WorkItem { get; set; }
         List<SizeVote> StorySizeVotes { get; }
         bool ShowVotes { get; }
+        int ConnectedClients { get; }
         int TimeLeft { get; }
         event Action OnChange;
         void AddStorySizeVotes(SizeVote vote);

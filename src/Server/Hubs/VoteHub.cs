@@ -10,6 +10,20 @@ namespace ScrumStorySizer.Server.Hubs
     {
         private readonly CacheService _cacheService;
 
+        public async override Task OnConnectedAsync()
+        {
+            _cacheService.ConnectedClients++;
+            await Clients.All.SendAsync(Constants.HUB_UPDATE_CONNECTED_CLIENTS, _cacheService.ConnectedClients);
+            await base.OnConnectedAsync();
+        }
+
+        public async override Task OnDisconnectedAsync(Exception exception)
+        {
+            _cacheService.ConnectedClients--;
+            await Clients.All.SendAsync(Constants.HUB_UPDATE_CONNECTED_CLIENTS, _cacheService.ConnectedClients);
+            await base.OnDisconnectedAsync(exception);
+        }
+
         public VoteHub(CacheService cacheService) : base()
         {
             _cacheService = cacheService;
