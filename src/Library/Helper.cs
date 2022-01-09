@@ -74,5 +74,28 @@ namespace ScrumStorySizer.Library
             remainingByteSize -= messageByteSize; // Update remaining byte size
             return message;
         }
+
+        public static string ToRelativeTimeStamp(this TimeSpan timeSpan)
+        {
+            if (timeSpan.TotalSeconds < 1)
+                return "Just now";
+
+            if (timeSpan.TotalMinutes < 1)
+                return $"{timeSpan.TotalSeconds} second{(timeSpan.TotalSeconds == 1 ? string.Empty : "s")}";
+
+            if (timeSpan.TotalHours < 1)
+                return $"{timeSpan.TotalMinutes} minute{(timeSpan.TotalMinutes == 1 ? string.Empty : "s")}";
+
+            if (timeSpan.TotalDays < 1)
+                return $"{timeSpan.TotalHours} hour{(timeSpan.TotalHours == 1 ? string.Empty : "s")}";
+
+            if (timeSpan.TotalDays < 7)
+                return $"{timeSpan.TotalDays} day{(timeSpan.TotalDays == 1 ? string.Empty : "s")}";
+
+            if (timeSpan.TotalDays < 365)
+                return $"{timeSpan.TotalDays / 7} week{((timeSpan.TotalDays / 7) == 1 ? string.Empty : "s")}";
+
+            return $"{timeSpan.TotalDays / 365} year{((timeSpan.TotalDays / 365) == 1 ? string.Empty : "s")}";
+        }
     }
 }

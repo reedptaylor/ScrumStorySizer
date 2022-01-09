@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using Markdig;
 using Microsoft.AspNetCore.ResponseCompression;
+using ScrumStorySizer.Library;
 using ScrumStorySizer.Server;
 using ScrumStorySizer.Server.Hubs;
 
@@ -121,7 +122,7 @@ app.MapGet("uptime", async (context) => // Map uptime endpoint
     process.WaitForExit();
 
     if (string.IsNullOrEmpty(error) && DateTime.TryParse(output, out DateTime startTime))
-        await context.Response.WriteAsync((DateTime.Now - startTime).ToString("g"));
+        await context.Response.WriteAsync((DateTime.Now - startTime).ToRelativeTimeStamp());
     else
         await context.Response.WriteAsync("N/A");
 });
