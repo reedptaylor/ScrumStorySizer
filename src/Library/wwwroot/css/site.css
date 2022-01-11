@@ -360,14 +360,14 @@ input:checked + .slider:before {
 }
 
 @media (max-width: 450px) {
-  .vote-grp-lg,
+  .btn-grp-lg,
   .nav-menu {
     display: none !important;
   }
 }
 
 @media (min-width: 450px) {
-  .vote-grp-sm {
-    display: none;
+  .btn-grp-sm {
+    display: none !important;
   }
 }
