@@ -146,7 +146,7 @@ app {
 }
 
 .content {
-  padding-top: 1.1rem;
+  padding-top: 0.7rem;
 }
 
 .valid.modified:not([type="checkbox"]) {
@@ -333,10 +333,6 @@ input:checked + .slider:before {
     font-size: 1rem;
   }
 
-  .main {
-    margin-left: 20px;
-    margin-right: 20px;
-  }
   .content {
     margin-left: auto;
     margin-right: auto;
@@ -355,7 +351,7 @@ input:checked + .slider:before {
 
   .main > div {
     padding-left: 2rem !important;
-    padding-right: 1.5rem !important;
+    padding-right: 2rem !important;
   }
 
   .navbar-toggler {
