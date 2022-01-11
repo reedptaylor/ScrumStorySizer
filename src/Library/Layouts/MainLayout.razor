@@ -12,9 +12,9 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
             <div class="navbar-nav ml-auto">
-                <a class="nav-item nav-link @(CurrentPage == string.Empty ? "active" : string.Empty)" href="/">Team</a>
-                <a class="nav-item nav-link @(CurrentPage == "master" ? "active" : string.Empty)" href="/master">Scrum Master</a>
-                <a class="nav-item nav-link @(CurrentPage == "settings" ? "active" : string.Empty)" href="/settings">Settings</a>
+                <a class="nav-item nav-link @(CurrentPage == string.Empty ? "active" : string.Empty)" href="/" onclick="utils.collapseNavbar()">Team</a>
+                <a class="nav-item nav-link @(CurrentPage == "master" ? "active" : string.Empty)" href="/master" onclick="utils.collapseNavbar()">Scrum Master</a>
+                <a class="nav-item nav-link @(CurrentPage == "settings" ? "active" : string.Empty)" href="/settings" onclick="utils.collapseNavbar()">Settings</a>
             </div>
         </div>
     </nav>
