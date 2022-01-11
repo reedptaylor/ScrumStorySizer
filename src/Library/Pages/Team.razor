@@ -16,7 +16,7 @@
         <StoryDetails />
         @if (!PokerVote.ShowVotes && (!PokerVote.StorySizeVotes.Any(item => item.User == Username) || ChangeVote))
         {
-            <div class="vote-grp-lg d-flex mt-4 mx-auto">
+            <div class="btn-grp-lg d-flex mt-4 mx-auto">
                 <div class="btn-group mx-auto" role="group" style="width:500px;" aria-label="Voting group">
                     <button type="button" title="Story Size 1" class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.XS)">XS</button>
                     <button type="button" title="Story Size 2" class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.S)">S</button>
@@ -26,16 +26,16 @@
                     <button type="button" title="Story Size 13. Needs to be broken up." class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.XXL)">XXL</button>
                 </div>
             </div>
-            <div class="vote-grp-sm">
+            <div class="btn-grp-sm">
                 <div class="d-flex mt-4 mx-auto">
-                    <div class="btn-group mx-auto" role="group" style="width:500px;" aria-label="Voting group">
+                    <div class="btn-group btn-group-sm mx-auto" role="group" style="width:290px;" aria-label="Voting group">
                         <button type="button" title="Story Size 1" class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.XS)">XS</button>
                         <button type="button" title="Story Size 2" class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.S)">S</button>
                         <button type="button" title="Story Size 3" class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.M)">M</button>
                     </div>
                 </div>
                 <div class="d-flex mt-4 mx-auto">
-                    <div class="btn-group mx-auto" role="group" style="width:500px;" aria-label="Voting group">
+                    <div class="btn-group btn-group-sm mx-auto" role="group" style="width:290px;" aria-label="Voting group">
                         <button type="button" title="Story Size 5" class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.L)">L</button>
                         <button type="button" title="Story Size 8" class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.XL)">XL</button>
                         <button type="button" title="Story Size 13. Needs to be broken up." class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.XXL)">XXL</button>
@@ -45,23 +45,33 @@
         }
         else if (!PokerVote.ShowVotes)
         {
-            <div class="pr-3">Your Vote: @PokerVote.StorySizeVotes.FirstOrDefault(item => item.User == Username)?.Size</div>
-            <button class="btn btn-primary mt-2" @onclick="() => ChangeVote = true">Change Vote</button>
+            <div class="pr-3 mt-3">Your Vote: @PokerVote.StorySizeVotes.FirstOrDefault(item => item.User == Username)?.Size</div>
+            <div class="btn-grp-lg">
+                <button class="btn btn-primary mt-2" @onclick="() => ChangeVote = true">Change Vote</button>
+            </div>
+            <div class="btn-grp-sm">
+                <button class="btn btn-primary btn-sm mt-2" @onclick="() => ChangeVote = true">Change Vote</button>
+            </div>
         }
-        <div class="mt-2 text-center">
+        
             @if (string.IsNullOrWhiteSpace(Username) && !PokerVote.ShowVotes)
             {
-                <text>Enter a display name to start voting.</text>
+                <div class="mt-4 text-center">
+                    <text>Enter a display name to start voting.</text>
+                </div>
             }
             else if (string.IsNullOrWhiteSpace(PokerVote.WorkItem?.Title))
             {
-                <text>Waiting for a new story.</text>
+                <div class="mt-4 text-center">
+                    <text>Waiting for a new story.</text>
+                </div>
             }
             else if (PokerVote.TimeLeft > 0)
             {
-                <text>Time remaining: @PokerVote.TimeLeft second@(PokerVote.TimeLeft != 1 ? "s" : "")</text>
+                <div class="mt-4 text-center">
+                    <text>Time remaining: @PokerVote.TimeLeft second@(PokerVote.TimeLeft != 1 ? "s" : "")</text>
+                </div>
             }
-        </div>
     </div>
 </div>
 
@@ -71,7 +81,7 @@
         <hr />
         @if (!PokerVote.ShowVotes)
         {
-            <div class="row">
+            <div class="row mb-0">
                 <div class="col">
                     Waiting for voting to finish. @PokerVote.StorySizeVotes.Count() votes counted.
                 </div>

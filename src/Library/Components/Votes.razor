@@ -1,5 +1,3 @@
-@using Microsoft.JSInterop;
-
 <div class="row">
     <div class="col">
         @foreach (List<SizeVote> group in groupList)
@@ -20,7 +18,7 @@
         }
     </div>
 </div>
-<div class="row">
+<div class="row mb-0">
     <div class="col">
         <div>Average Story Points: @avgStoryPoints.ToString("0.#")</div>
         <div>Rounded Story Size: @avgStorySize</div>
