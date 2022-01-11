@@ -276,7 +276,7 @@ input:checked + .slider:before {
 
 .spinner {
   position: fixed;
-  z-index: 1;
+  z-index: 99999;
   left: 0;
   top: 0;
   width: 100vw;
@@ -287,7 +287,7 @@ input:checked + .slider:before {
 .modal {
   display: block;
   position: fixed;
-  z-index: 99999;
+  z-index: 99998;
   left: 0;
   top: 0;
   width: 100%;
