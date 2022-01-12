@@ -324,6 +324,15 @@ input:checked + .slider:before {
   font-size: 1rem;
 }
 
+.scrollable {
+  overflow: auto;
+}
+
+.scrollable.work-item-details {
+  overflow-x: hidden;
+  max-height: 75vh;
+}
+
 @media (max-width: 767.98px) {
   .display-4 {
     font-size: 1.5rem !important;

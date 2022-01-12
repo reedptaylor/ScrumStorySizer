@@ -16,6 +16,7 @@
         <StoryDetails />
         @if (!PokerVote.ShowVotes && (!PokerVote.StorySizeVotes.Any(item => item.User == Username) || ChangeVote))
         {
+            <hr />
             <div class="btn-grp-lg d-flex mt-4 mx-auto">
                 <div class="btn-group mx-auto" role="group" style="width:500px;" aria-label="Voting group">
                     <button type="button" title="Story Size 1" class="btn btn-primary btn-vote" disabled="@VoteDisabled" @onclick="() => AddVote(StorySize.XS)">XS</button>
@@ -45,6 +46,7 @@
         }
         else if (!PokerVote.ShowVotes)
         {
+            <hr />
             <div class="pr-3 mt-3">Your Vote: @PokerVote.StorySizeVotes.FirstOrDefault(item => item.User == Username)?.Size</div>
             <div class="btn-grp-lg">
                 <button class="btn btn-primary mt-2" @onclick="() => ChangeVote = true">Change Vote</button>
@@ -54,24 +56,24 @@
             </div>
         }
         
-            @if (string.IsNullOrWhiteSpace(Username) && !PokerVote.ShowVotes)
-            {
-                <div class="mt-4 text-center">
-                    <text>Enter a display name to start voting.</text>
-                </div>
-            }
-            else if (string.IsNullOrWhiteSpace(PokerVote.WorkItem?.Title))
-            {
-                <div class="mt-4 text-center">
-                    <text>Waiting for a new story.</text>
-                </div>
-            }
-            else if (PokerVote.TimeLeft > 0)
-            {
-                <div class="mt-4 text-center">
-                    <text>Time remaining: @PokerVote.TimeLeft second@(PokerVote.TimeLeft != 1 ? "s" : "")</text>
-                </div>
-            }
+        @if (string.IsNullOrWhiteSpace(Username) && !PokerVote.ShowVotes)
+        {
+            <div class="mt-4 text-center">
+                <text>Enter a display name to start voting.</text>
+            </div>
+        }
+        else if (string.IsNullOrWhiteSpace(PokerVote.WorkItem?.Title))
+        {
+            <div class="mt-4 text-center">
+                <text>Waiting for a new story.</text>
+            </div>
+        }
+        else if (PokerVote.TimeLeft > 0)
+        {
+            <div class="mt-4 text-center">
+                <text>Time remaining: @PokerVote.TimeLeft second@(PokerVote.TimeLeft != 1 ? "s" : "")</text>
+            </div>
+        }
     </div>
 </div>
 
