@@ -16,6 +16,13 @@ namespace ScrumStorySizer.Library.Services
         private readonly List<string> _tagsToRemove;
         private readonly string _newState;
 
+        private static readonly IEnumerable<DescriptionField> deafaultDescriptionFields = new List<DescriptionField>()
+        {
+            new DescriptionField() { DisplayName = "Description", ApiName = "System.Description" },
+            new DescriptionField() { DisplayName = "Repro Steps", ApiName = "Microsoft.VSTS.TCM.ReproSteps" },
+            new DescriptionField() { DisplayName = "Acceptance Criteria", ApiName = "Microsoft.VSTS.Common.AcceptanceCriteria" },
+        };
+
         public DevOpsClient(HttpClient httpClient, NavigationManager navigationManager, DevOpsCredential credential)
         {
             _httpClient = httpClient;
@@ -38,7 +45,7 @@ namespace ScrumStorySizer.Library.Services
                 throw new UnauthorizedAccessException();
         }
 
-        public async Task<WorkItem> GetWorkItem(string id) // Get work item and parse JSON into model
+        public async Task<WorkItem> GetWorkItem(string id, IEnumerable<DescriptionField> extraDescriptionFields = null) // Get work item and parse JSON into model
         {
             WorkItem workItem = new();
             var workItemResponse = await _httpClient.GetAsync($"wit/workitems/{id}?api-version=6.0");
@@ -60,10 +67,12 @@ namespace ScrumStorySizer.Library.Services
 
             if (_credential.ShowDescription)
             {
-                fields.TryGetProperty("System.Description", out JsonElement descriptionElement);
-                workItem.Description = GetJsonValue(descriptionElement);
-                fields.TryGetProperty("Microsoft.VSTS.Common.AcceptanceCriteria", out JsonElement criteriaElement);
-                workItem.AcceptanceCriteria = GetJsonValue(criteriaElement);
+                workItem.DescriptionFields = deafaultDescriptionFields.Concat(extraDescriptionFields ?? new List<DescriptionField>()).ToList();
+                foreach (DescriptionField descriptionField in workItem.DescriptionFields)
+                {
+                    fields.TryGetProperty(descriptionField.ApiName, out JsonElement element);
+                    descriptionField.Value = GetJsonValue(element);
+                }
             }
 
             return workItem;

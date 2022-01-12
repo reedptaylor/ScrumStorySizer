@@ -1,7 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using ScrumStorySizer.Library.Models;
+﻿using ScrumStorySizer.Library.Models;
 
 namespace ScrumStorySizer.Library.Services
 {
@@ -9,7 +6,7 @@ namespace ScrumStorySizer.Library.Services
     {
         Task TestAuthentication();
 
-        Task<WorkItem> GetWorkItem(string id);
+        Task<WorkItem> GetWorkItem(string id, IEnumerable<DescriptionField> extraDescriptionFields = null);
 
         Task SizeWorkItem(string id, int size);
     }
