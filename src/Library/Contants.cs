@@ -14,5 +14,7 @@ namespace ScrumStorySizer.Library
         public const string HUB_UPDATE_CONNECTED_CLIENTS = "UpdateConnectedClients";
 
         public const int MAX_SIGNALR_SIZE = 254000; // Max size for a SignalR message is 256KB (manually set) so we have a 2KB buffer for the JSON payload
+
+        public const string DEFAULT_PBI_NAME = "Product Backlog Item";
     }
 }

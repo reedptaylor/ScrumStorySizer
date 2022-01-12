@@ -1,28 +1,21 @@
-<div class="row">
-    <div class="col">
-        <h6 class="card-title">Story Name</h6>
-        <h4>@(string.IsNullOrWhiteSpace(PokerVote.WorkItem?.Title) ? "Waiting..." : PokerVote.WorkItem.Title)</h4>
+<div class="work-item-details scrollable">
+    <div class="row my-0">
+        <div class="col">
+            <h6 class="card-title">Story Name</h6>
+            <h4 class="mb-0">@(string.IsNullOrWhiteSpace(PokerVote.WorkItem?.Title) ? "Waiting..." : PokerVote.WorkItem.Title)</h4>
+        </div>
     </div>
+
+    @if (_descriptionFields?.Any() == true)
+    {
+        @foreach (MarkupDescriptionField descriptionField in _descriptionFields)
+        {
+            <div class="row mb-0 mt-4">
+                <div class="col">
+                    <h6 class="card-title">@descriptionField.DisplayName</h6>
+                    <div>@descriptionField.MarkupValue</div>
+                </div>
+            </div>
+        }
+    }
 </div>
-
-@if (!string.IsNullOrWhiteSpace(_description.Value))
-{
-    <hr />
-    <div class="row">
-        <div class="col">
-            <h6 class="card-title">Description</h6>
-            <div>@_description</div>
-        </div>
-    </div>
-}
-
-@if (!string.IsNullOrWhiteSpace(_acceptanceCriteria.Value))
-{
-    <hr />
-    <div class="row">
-        <div class="col">
-            <h6 class="card-title">Acceptance Criteria</h6>
-            <div>@_acceptanceCriteria</div>
-        </div>
-    </div>
-}
