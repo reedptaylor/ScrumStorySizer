@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using ScrumStorySizer.Library.Models;
 using ScrumStorySizer.Library.Services;
 
 namespace ScrumStorySizer.Library.Components
@@ -7,8 +8,7 @@ namespace ScrumStorySizer.Library.Components
     {
         [Inject] IVotingService PokerVote { get; set; }
 
-        private MarkupString _description = new();
-        private MarkupString _acceptanceCriteria = new();
+        private IEnumerable<MarkupDescriptionField> _descriptionFields;
 
         protected override void OnInitialized()
         {
@@ -23,8 +23,9 @@ namespace ScrumStorySizer.Library.Components
 
         void OnUpdate()
         {
-            _description = PokerVote.WorkItem?.Description.SanitizeHTML().ConvertToMarkupString() ?? new();
-            _acceptanceCriteria = PokerVote.WorkItem?.AcceptanceCriteria.SanitizeHTML().ConvertToMarkupString() ?? new();
+            _descriptionFields = PokerVote.WorkItem?.DescriptionFields?
+                .ConvertAll(field => new MarkupDescriptionField(field))
+                .Where(field => !string.IsNullOrWhiteSpace(field.Value));
             InvokeAsync(StateHasChanged);
         }
     }
