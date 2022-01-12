@@ -14,6 +14,7 @@
         <h5 class="card-title">Voting</h5>
         <hr />
         <StoryDetails />
+        <hr />
         @if (!PokerVote.ShowVotes && (!PokerVote.StorySizeVotes.Any(item => item.User == Username) || ChangeVote))
         {
             <div class="btn-grp-lg d-flex mt-4 mx-auto">
