@@ -4,7 +4,7 @@ namespace ScrumStorySizer.Library.Services
 {
     public interface IWorkItemClient
     {
-        Task TestAuthentication();
+        Task TestAuthentication(IEnumerable<string> tags, string state);
 
         Task<WorkItem> GetWorkItem(string id, IEnumerable<DescriptionField> extraDescriptionFields = null);
 

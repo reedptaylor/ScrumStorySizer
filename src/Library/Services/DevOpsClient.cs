@@ -37,12 +37,31 @@ namespace ScrumStorySizer.Library.Services
             _newState = credential.NewState;
         }
 
-        public async Task TestAuthentication()
+        public async Task TestAuthentication(IEnumerable<string> tags, string state)
         {
-            // Test authentication using get work item with ID = 0. A 403 signifies authentication failure while a 400 signifies success.
-            var workItemResponse = await _httpClient.GetAsync($"wit/workitems?ids=0&api-version=6.0");
-            if (!workItemResponse.IsSuccessStatusCode && workItemResponse.StatusCode != HttpStatusCode.BadRequest)
-                throw new UnauthorizedAccessException();
+            bool alreadyChecked = false;
+            if (tags?.Any() == true)
+            {
+                var workItemResponse = await _httpClient.GetAsync($"wit/tags?api-version=6.0");
+                if (workItemResponse.StatusCode != HttpStatusCode.OK)
+                    throw new UnauthorizedAccessException();
+                CheckTags(tags, JsonDocument.Parse(await workItemResponse.Content.ReadAsStringAsync()));
+                alreadyChecked = true;
+            }
+            if (!string.IsNullOrWhiteSpace(state))
+            {
+                var workItemResponse = await _httpClient.GetAsync($"wit/workitemtypes/{Constants.DEFAULT_PBI_NAME}/states?api-version=6.0");
+                if (workItemResponse.StatusCode != HttpStatusCode.OK)
+                    throw new UnauthorizedAccessException();
+                CheckState(state, JsonDocument.Parse(await workItemResponse.Content.ReadAsStringAsync()));
+                alreadyChecked = true;
+            }
+            if (!alreadyChecked) // Do atleast 1 check to see if credentials are correct. Check if tags return any value.
+            {
+                var workItemResponse = await _httpClient.GetAsync($"wit/tags?api-version=6.0");
+                if (workItemResponse.StatusCode != HttpStatusCode.OK)
+                    throw new UnauthorizedAccessException();
+            }
         }
 
         public async Task<WorkItem> GetWorkItem(string id, IEnumerable<DescriptionField> extraDescriptionFields = null) // Get work item and parse JSON into model
@@ -106,6 +125,44 @@ namespace ScrumStorySizer.Library.Services
                 throw (workItemResponse.StatusCode == HttpStatusCode.Unauthorized || workItemResponse.StatusCode == HttpStatusCode.Forbidden)
                     ? new UnauthorizedAccessException(rawResponse) : new WorkItemClientException(rawResponse);
             }
+        }
+
+        private void CheckState(string state, JsonDocument document)
+        {
+            IEnumerable<string> stateTypes = null;
+            JsonElement valueElement = document.RootElement.GetProperty("value");
+            if (valueElement.ValueKind == JsonValueKind.Array && valueElement.GetArrayLength() > 0)
+            {
+                stateTypes = valueElement
+                    .EnumerateArray()
+                    .Select(stateType => stateType.GetProperty("name").GetString());
+            }
+
+            if (stateTypes == null)
+                throw new WorkItemClientException("Unable to verify allowed work item states.");
+
+            if (!stateTypes?.Contains(state) ?? false)
+                throw new WorkItemClientException($"State {state} is not valid for {Constants.DEFAULT_PBI_NAME} in this project.");
+        }
+
+        private void CheckTags(IEnumerable<string> tags, JsonDocument document)
+        {
+            IEnumerable<string> allowedTags = null;
+            JsonElement valueElement = document.RootElement.GetProperty("value");
+            if (valueElement.ValueKind == JsonValueKind.Array && valueElement.GetArrayLength() > 0)
+            {
+                allowedTags = valueElement
+                    .EnumerateArray()
+                    .Select(stateType => stateType.GetProperty("name").GetString());
+            }
+
+            if (allowedTags == null)
+                throw new WorkItemClientException("Unable to verify allowed work item tags.");
+
+            IEnumerable<string> forbiddenTags = tags.Except(allowedTags);
+
+            if (forbiddenTags.Any())
+                throw new WorkItemClientException($"Tag{(forbiddenTags.Count() > 1 ? "s" : string.Empty)} \"{string.Join(", ", forbiddenTags)}\" {(forbiddenTags.Count() > 1 ? "are" : "is")} not valid for this project.");
         }
 
         private string GetJsonValue(JsonElement element) // Helper to get Json Value from JsonElement

@@ -52,15 +52,27 @@ namespace ScrumStorySizer.Library.Pages
             try
             {
                 _spinner.Set(true);
-                await workItemClient.TestAuthentication();
+                IEnumerable<string> tags = (DevOpsCredential.TagsToAdd ?? new()).Concat(DevOpsCredential.TagsToRemove ?? new());
+                await workItemClient.TestAuthentication(tags, DevOpsCredential.NewState);
                 await SaveCredential();
                 _spinner.Set(false);
                 _messagePopUp.ShowMessage("Credentials are saved.");
             }
-            catch
+            catch (UnauthorizedAccessException)
             {
                 _spinner.Set(false);
-                _messagePopUp.ShowMessage("Credentials are invalid.");
+                _messagePopUp.ShowMessage("Invalid credentials provided.");
+            }
+            catch (WorkItemClientException ex)
+            {
+                _spinner.Set(false);
+                _messagePopUp.ShowMessage(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _spinner.Set(false);
+                Console.WriteLine("Error: " + ex.InnerException?.Message ?? ex.Message);
+                _messagePopUp.ShowMessage("Unable to save credentials.");
             }
         }
 
