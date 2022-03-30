@@ -9,25 +9,32 @@ namespace ScrumStorySizer.Library
 {
     public static class Helper // Static class for helper methods
     {
-        public static async Task<T> GetScrumMasterSettings<T>(IJSRuntime jsRuntime) where T : IScrumMasterSettings, new()
+        public static async Task<(DevOpsCredential credential, bool IsEnabled)> GetCurrentScrumMasterSettings(this IJSRuntime jsRuntime)
         {
-            T settings = new();
-            string scrumMasterSettings = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "devops-auth");
+            DevOpsCredentialList settingsList = await jsRuntime.GetScrumMasterSettings();
+            DevOpsCredential settings = settingsList.Credentials.FirstOrDefault(c => c.IsSelected) ?? (settingsList.Credentials.FirstOrDefault() ?? new DevOpsCredential());
+            return (settings, settingsList.IsEnabled);
+        }
+
+        public static async Task<DevOpsCredentialList> GetScrumMasterSettings(this IJSRuntime jsRuntime)
+        {
+            DevOpsCredentialList settingsList = new();
+            string scrumMasterSettings = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "scrum-master-settings");
 
             if (!string.IsNullOrWhiteSpace(scrumMasterSettings))
             {
                 try
                 {
                     scrumMasterSettings = Encoding.UTF8.GetString(Convert.FromBase64String(scrumMasterSettings));
-                    settings = JsonSerializer.Deserialize<T>(scrumMasterSettings) ?? new();
+                    settingsList = JsonSerializer.Deserialize<DevOpsCredentialList>(scrumMasterSettings) ?? new();
                 }
                 catch { }
             }
 
-            return settings;
+            return settingsList;
         }
 
-        public static async Task<TeamMemberSettings> GetTeamMemberSettings(IJSRuntime jsRuntime)
+        public static async Task<TeamMemberSettings> GetTeamMemberSettings(this IJSRuntime jsRuntime)
         {
             TeamMemberSettings settings = new();
             string teamMemberSettings = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "team-member-settings");

@@ -20,6 +20,7 @@ namespace ScrumStorySizer.Library.Pages
 
         private bool showCredential = false;
 
+        private readonly string configHelpText = "Chose from multiple configurations for different projects.";
         private readonly string patHelpText = "Personal Access Token (PAT) requires Work Items: read and write permission.";
         private readonly string tagsToAddHelpText = "Semicolon delimited list of tags to add to the work item after it is sized. Leave blank for no change.";
         private readonly string tagsToRemoveHelpText = "Semicolon delimited list of tags to remove from the work item after it is sized. Leave blank for no change.";
@@ -98,7 +99,7 @@ namespace ScrumStorySizer.Library.Pages
         protected async override Task OnInitializedAsync()
         {
             // Load settings from localStorage
-            DevOpsCredential = await Helper.GetScrumMasterSettings<DevOpsCredential>(JSRuntime);
+            DevOpsCredential = await Helper.GetCurrentScrumMasterSettings<DevOpsCredential>(JSRuntime);
             TeamMemberSettings = await Helper.GetTeamMemberSettings(JSRuntime);
         }
     }
