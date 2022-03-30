@@ -45,6 +45,17 @@
                     <span class="slider round"></span>
                 </label>
             </div>
+            <div>
+                <label for="devops-configuration">Configuration:</label>
+                <select name="devops-configuration" id="devops-configuration">
+                    <option value="volvo">Volvo</option>
+                    <option value="saab">Saab</option>
+                    <option value="mercedes">Mercedes</option>
+                    <option value="audi">Audi</option>
+                </select>
+                <i class="fa fa-info-circle p-1" style="cursor:pointer;"
+                    @onclick="() => _messagePopUp.ShowMessage(configHelpText)" title="@configHelpText"></i>
+            </div>
             <div class="row">
                 <div class="col-md col-12">
                     <label style="width:100%" for="DevOpsCredential.Organization">Organization</label>
@@ -79,7 +90,8 @@
                             Description</label>
                         <label class="switch ml-3 mr-auto mt-auto">
                             <InputCheckbox type="checkbox" id="DevOpsCredential.ShowDescription"
-                                @bind-Value="DevOpsCredential.ShowDescription" disabled="@(!DevOpsCredential.IsEnabled)" />
+                                @bind-Value="DevOpsCredential.ShowDescription"
+                                disabled="@(!DevOpsCredential.IsEnabled)" />
                             <span class="slider round@(DevOpsCredential.IsEnabled ? string.Empty : " disabled")"></span>
                         </label>
                     </div>

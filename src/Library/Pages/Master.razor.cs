@@ -98,7 +98,7 @@ namespace ScrumStorySizer.Library.Pages
         protected async override Task OnInitializedAsync()
         {
             PokerVote.OnChange += OnUpdate;
-            DevOpsCredential = await Helper.GetScrumMasterSettings<DevOpsCredential>(JSRuntime);
+            DevOpsCredential = await Helper.GetCurrentScrumMasterSettings<DevOpsCredential>(JSRuntime);
             TeamMemberSettings = await Helper.GetTeamMemberSettings(JSRuntime);
         }
 
