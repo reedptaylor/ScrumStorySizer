@@ -1,5 +1,8 @@
 @using Microsoft.AspNetCore.SignalR.Client
+@implements IDisposable
 @inject IVotingService VotingService
+@inject IJSRuntime JSRuntime
+@inject PersistentComponentState ApplicationState
 
 <Router AppAssembly="@typeof(Program).Assembly" PreferExactMatches="true" AdditionalAssemblies="new[] { typeof(ScrumStorySizer.Library.Pages.Master).Assembly }">
     <Found Context="routeData">
@@ -21,14 +24,9 @@
 <ConnectionError State="@VotingService.HubConnection.State" />
 
 @code {
-    private Task OnUpdate()
-    {
-        InvokeAsync(() =>
-        {
-            StateHasChanged();
-        });
-        return Task.CompletedTask;
-    }
+    private PersistingComponentStateSubscription persistingSubscription;
+
+    private async Task OnUpdate() => await InvokeAsync(StateHasChanged);
 
     private async Task OnReconnect()
     {
@@ -42,6 +40,10 @@
 
     protected override async Task OnInitializedAsync()
     {
+        persistingSubscription = ApplicationState.RegisterOnPersisting(PersistData);
+        if (ApplicationState.TryTakeFromJson<VotingServiceData>(nameof(VotingServiceData), out VotingServiceData restored))
+            VotingService.VotingServiceData = restored;
+
         // Set up SignalR Hub connection and subscribe to connection updates
         if (VotingService.HubConnection.State == HubConnectionState.Disconnected)
         {
@@ -52,5 +54,23 @@
         VotingService.HubConnection.Closed += (_) => OnUpdate();
         VotingService.HubConnection.Reconnected += (_) => OnReconnect();
         VotingService.HubConnection.Reconnecting += (_) => OnUpdate();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+            await JSRuntime.RefocusUtil();
+    }
+
+    private Task PersistData()
+    {
+        ApplicationState.PersistAsJson(nameof(VotingServiceData), VotingService.VotingServiceData);
+
+        return Task.CompletedTask;
+    }
+
+    void IDisposable.Dispose()
+    {
+        persistingSubscription.Dispose();
     }
 }

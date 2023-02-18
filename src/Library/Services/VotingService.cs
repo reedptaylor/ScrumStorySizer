@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.SignalR.Client;
+﻿using Microsoft.AspNetCore.SignalR.Client;
 using ScrumStorySizer.Library.Models;
 
 namespace ScrumStorySizer.Library.Services
@@ -8,79 +7,71 @@ namespace ScrumStorySizer.Library.Services
     {
         public HubConnection HubConnection { get; private set; }
 
-        public VotingService(NavigationManager navigationManager)
+        public VotingService(string hubUrl)
         {
             // Declare SignalR Hub Connection and set up event handlers
             HubConnection = new HubConnectionBuilder()
-                .WithUrl(navigationManager.ToAbsoluteUri("/voteHub"))
+                .WithUrl(hubUrl)
                 .WithAutomaticReconnect()
                 .Build();
 
             HubConnection.On<SizeVote>(Constants.HUB_COMMAND_ADD_VOTES, (vote) =>
             {
-                StorySizeVotes.RemoveAll(item => item.User == vote.User);
-                StorySizeVotes.Add(vote);
+                VotingServiceData.StorySizeVotes.RemoveAll(item => item.User == vote.User);
+                VotingServiceData.StorySizeVotes.Add(vote);
                 NotifyDataChanged();
             });
 
             HubConnection.On(Constants.HUB_COMMAND_CLEAR_VOTES, () =>
             {
-                StorySizeVotes.Clear();
-                ShowVotes = false;
+                VotingServiceData.StorySizeVotes.Clear();
+                VotingServiceData.ShowVotes = false;
                 NotifyDataChanged();
             });
 
             HubConnection.On(Constants.HUB_COMMAND_REVEAL_VOTES, () =>
             {
-                ShowVotes = true;
-                TimeLeft = 0;
+                VotingServiceData.ShowVotes = true;
+                VotingServiceData.TimeLeft = 0;
                 NotifyDataChanged();
             });
 
             HubConnection.On<WorkItem>(Constants.HUB_COMMAND_UPDATE_WORK_ITEM, (workItem) =>
             {
-                WorkItem = workItem;
-                TimeLeft = 0;
+                VotingServiceData.WorkItem = workItem;
+                VotingServiceData.TimeLeft = 0;
                 NotifyDataChanged();
             });
 
             HubConnection.On<WorkItem, List<SizeVote>, bool>(Constants.HUB_COMMAND_NEW_CONNECTION, (workItem, storySizeVotes, showVotes) =>
             {
-                WorkItem = workItem;
-                StorySizeVotes = storySizeVotes;
-                ShowVotes = showVotes;
+                VotingServiceData.WorkItem = workItem;
+                VotingServiceData.StorySizeVotes = storySizeVotes;
+                VotingServiceData.ShowVotes = showVotes;
                 NotifyDataChanged();
             });
 
             HubConnection.On(Constants.HUB_COMMAND_CANCEL_TIMER, () =>
             {
-                TimeLeft = 0;
+                VotingServiceData.TimeLeft = 0;
                 NotifyDataChanged();
             });
 
             HubConnection.On<int>(Constants.HUB_COMMAND_TIME_REMAINING, (seconds) =>
             {
-                TimeLeft = seconds;
+                VotingServiceData.TimeLeft = seconds;
                 NotifyDataChanged();
             });
 
             HubConnection.On<int>(Constants.HUB_UPDATE_CONNECTED_CLIENTS, (count) =>
             {
-                ConnectedClients = count;
+                VotingServiceData.ConnectedClients = count;
                 NotifyDataChanged();
             });
         }
 
         // In Memory State Data
-        public WorkItem WorkItem { get; set; } = new WorkItem();
-
-        public List<SizeVote> StorySizeVotes { get; private set; } = new List<SizeVote>();
-
-        public bool ShowVotes { get; private set; }
-
-        public int ConnectedClients { get; private set; }
-
-        public int TimeLeft { get; set; } = 0;
+        public VotingServiceData VotingServiceData { get; set; } = new();
 
         public event Action OnChange;
 

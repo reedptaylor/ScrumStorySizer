@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using ScrumStorySizer.Library.Models;
 using ScrumStorySizer.Library.Services;
+using ScrumStorySizer.Library.Utilities;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -53,7 +54,7 @@ namespace ScrumStorySizer.Library.Components
         {
             if (e.Key == "Enter")
             {
-                await JSRuntime.InvokeVoidAsync("utils.blur", _workItemIdInput);
+                await JSRuntime.BlurUtil(_workItemIdInput);
             }
         }
 

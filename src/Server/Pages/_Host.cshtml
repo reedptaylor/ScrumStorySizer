@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+@page
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -15,11 +18,8 @@
 </head>
 
 <body>
-    <div id="app">
-        <div class="d-flex" style="height:60vh;width:100vw;">
-            <div class="m-auto"><i class="fa fa-circle-o-notch fa-spin" style="font-size:30px;"></i></div>
-        </div>
-    </div>
+    <component type="typeof(ScrumStorySizer.Client.App)" render-mode="WebAssemblyPrerendered" />
+    <persist-component-state />
 
     <div id="blazor-error-ui">
         <div id="error-modal" tabindex="0" class="modal">
@@ -29,6 +29,7 @@
             </div>
         </div>
     </div>
+
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="_content/ScrumStorySizer.Library/js/jquery-3.6.0.slim.min.js"></script>
     <script src="_content/ScrumStorySizer.Library/js/popper/popper.min.js"></script>

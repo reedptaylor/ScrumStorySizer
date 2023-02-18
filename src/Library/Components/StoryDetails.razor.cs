@@ -6,24 +6,24 @@ namespace ScrumStorySizer.Library.Components
 {
     public partial class StoryDetails : IDisposable
     {
-        [Inject] IVotingService PokerVote { get; set; }
+        [Inject] IVotingService VotingService { get; set; }
 
         private IEnumerable<MarkupDescriptionField> _descriptionFields;
 
         protected override void OnInitialized()
         {
-            PokerVote.OnChange += OnUpdate;
+            VotingService.OnChange += OnUpdate;
             OnUpdate();
         }
 
         public void Dispose()
         {
-            PokerVote.OnChange -= OnUpdate;
+            VotingService.OnChange -= OnUpdate;
         }
 
         void OnUpdate()
         {
-            _descriptionFields = PokerVote.WorkItem?.DescriptionFields?
+            _descriptionFields = VotingService.VotingServiceData.WorkItem?.DescriptionFields?
                 .ConvertAll(field => new MarkupDescriptionField(field))
                 .Where(field => !string.IsNullOrWhiteSpace(field.Value));
             InvokeAsync(StateHasChanged);

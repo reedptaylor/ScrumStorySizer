@@ -12,6 +12,6 @@ namespace ScrumStorySizer.Server
 
         public bool ShowVotes { get; set; }
 
-        public int ConnectedClients { get; set; }
+        public int ConnectedClients { get; set; } = -1; // Subtract one for the Blazor Server pre-render connection
     }
 }

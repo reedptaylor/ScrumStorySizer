@@ -14,13 +14,13 @@ namespace ScrumStorySizer.Library.Pages
 
         [Inject] protected IJSRuntime JSRuntime { get; set; }
         [Inject] protected NavigationManager NavigationManager { get; set; }
-        [Inject] protected IVotingService PokerVote { get; set; }
+        [Inject] protected IVotingService VotingService { get; set; }
 
         private DevOpsCredential DevOpsCredential { get; set; } = new();
         private TeamMemberSettings TeamMemberSettings { get; set; } = new();
         private DevOpsStory _devOpsStoryRef;
 
-        protected bool ShowResultsDisabled => PokerVote.StorySizeVotes.Count == 0 || PokerVote.ShowVotes;
+        protected bool ShowResultsDisabled => VotingService.VotingServiceData.StorySizeVotes.Count == 0 || VotingService.VotingServiceData.ShowVotes;
 
         protected bool TimerActive { get; set; }
 
@@ -31,7 +31,7 @@ namespace ScrumStorySizer.Library.Pages
             {
                 while (seconds > 0 && TimerActive)
                 {
-                    PokerVote.TimeRemaining(seconds);
+                    VotingService.TimeRemaining(seconds);
                     seconds--;
                     await Task.Delay(1000);
                 }
@@ -44,24 +44,24 @@ namespace ScrumStorySizer.Library.Pages
 
         public void CancelTimer()
         {
-            PokerVote.CancelTimer();
+            VotingService.CancelTimer();
             TimerActive = false;
         }
 
         protected void RevealVotes()
         {
-            PokerVote.RevealVotes();
+            VotingService.RevealVotes();
             TimerActive = false;
         }
 
         protected void ClearVotes()
         {
-            PokerVote.ClearStorySizeVotes();
+            VotingService.ClearStorySizeVotes();
         }
 
         protected void UpdateWorkItem(WorkItem workItem)
         {
-            PokerVote.UpdateWorkItem(workItem);
+            VotingService.UpdateWorkItem(workItem);
             TimerActive = false;
         }
 
@@ -79,7 +79,7 @@ namespace ScrumStorySizer.Library.Pages
             try
             {
                 _spinner.Set(true);
-                await workItemClient.SizeWorkItem(PokerVote.WorkItem?.Id ?? "0", (int)size);
+                await workItemClient.SizeWorkItem(VotingService.VotingServiceData.WorkItem?.Id ?? "0", (int)size);
                 NewStory();
                 _spinner.Set(false);
             }
@@ -95,16 +95,24 @@ namespace ScrumStorySizer.Library.Pages
             }
         }
 
-        protected async override Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
-            PokerVote.OnChange += OnUpdate;
-            DevOpsCredential = await Helper.GetScrumMasterSettings<DevOpsCredential>(JSRuntime);
-            TeamMemberSettings = await Helper.GetTeamMemberSettings(JSRuntime);
+            VotingService.OnChange += OnUpdate;
+        }
+
+        protected async override Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                DevOpsCredential = await Helper.GetScrumMasterSettings<DevOpsCredential>(JSRuntime);
+                TeamMemberSettings = await Helper.GetTeamMemberSettings(JSRuntime);
+                await InvokeAsync(StateHasChanged);
+            }
         }
 
         public void Dispose()
         {
-            PokerVote.OnChange -= OnUpdate;
+            VotingService.OnChange -= OnUpdate;
         }
 
         void OnUpdate()

@@ -14,7 +14,7 @@
         <h5 class="card-title">Voting</h5>
         <hr />
         <StoryDetails />
-        @if (!PokerVote.ShowVotes && (!PokerVote.StorySizeVotes.Any(item => item.User == Username) || ChangeVote))
+        @if (!VotingService.VotingServiceData.ShowVotes && (!VotingService.VotingServiceData.StorySizeVotes.Any(item => item.User == Username) || ChangeVote))
         {
             <hr />
             <div class="btn-grp-lg d-flex mt-4 mx-auto">
@@ -44,10 +44,10 @@
                 </div>
             </div>
         }
-        else if (!PokerVote.ShowVotes)
+        else if (!VotingService.VotingServiceData.ShowVotes)
         {
             <hr />
-            <div class="pr-3 mt-3">Your Vote: @PokerVote.StorySizeVotes.FirstOrDefault(item => item.User == Username)?.Size</div>
+            <div class="pr-3 mt-3">Your Vote: @VotingService.VotingServiceData.StorySizeVotes.FirstOrDefault(item => item.User == Username)?.Size</div>
             <div class="btn-grp-lg">
                 <button class="btn btn-primary mt-2" @onclick="() => ChangeVote = true">Change Vote</button>
             </div>
@@ -56,22 +56,22 @@
             </div>
         }
         
-        @if (string.IsNullOrWhiteSpace(Username) && !PokerVote.ShowVotes)
+        @if (string.IsNullOrWhiteSpace(Username) && !VotingService.VotingServiceData.ShowVotes)
         {
             <div class="mt-4 text-center">
                 <text>Enter a display name to start voting.</text>
             </div>
         }
-        else if (string.IsNullOrWhiteSpace(PokerVote.WorkItem?.Title))
+        else if (string.IsNullOrWhiteSpace(VotingService.VotingServiceData.WorkItem?.Title))
         {
             <div class="mt-4 text-center">
                 <text>Waiting for a new story.</text>
             </div>
         }
-        else if (PokerVote.TimeLeft > 0)
+        else if (VotingService.VotingServiceData.TimeLeft > 0)
         {
             <div class="mt-4 text-center">
-                <text>Time remaining: @PokerVote.TimeLeft second@(PokerVote.TimeLeft != 1 ? "s" : "")</text>
+                <text>Time remaining: @VotingService.VotingServiceData.TimeLeft second@(VotingService.VotingServiceData.TimeLeft != 1 ? "s" : "")</text>
             </div>
         }
     </div>
@@ -81,17 +81,17 @@
     <div class="card-body">
         <h5 class="card-title">Results</h5>
         <hr />
-        @if (!PokerVote.ShowVotes)
+        @if (!VotingService.VotingServiceData.ShowVotes)
         {
             <div class="row mb-0">
                 <div class="col">
-                    Waiting for voting to finish. @PokerVote.StorySizeVotes.Count() votes counted.
+                    Waiting for voting to finish. @VotingService.VotingServiceData.StorySizeVotes.Count() votes counted.
                 </div>
             </div>
         }
         else
         {
-            <Votes SizeVotes="PokerVote.StorySizeVotes" ShowConfetti="TeamMemberSettings.ShowConfetti" />
+            <Votes SizeVotes="VotingService.VotingServiceData.StorySizeVotes" ShowConfetti="TeamMemberSettings.ShowConfetti" />
         }
     </div>
 </div>

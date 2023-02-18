@@ -2,6 +2,7 @@
 using Markdig;
 using Microsoft.AspNetCore.ResponseCompression;
 using ScrumStorySizer.Library;
+using ScrumStorySizer.Library.Services;
 using ScrumStorySizer.Server;
 using ScrumStorySizer.Server.Hubs;
 
@@ -26,6 +27,14 @@ builder.Services.AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy")); // Use reverse proxy to allow clients to make requests to DevOps
 
 builder.Services.AddSingleton<CacheService>();
+
+#region Client DI
+
+builder.Services.AddScoped(sp => new HttpClient() { BaseAddress = new Uri("https://localhost:5001/") });
+
+builder.Services.AddSingleton<IVotingService>(sp => new VotingService($"https://localhost:5001/votehub"));
+
+#endregion
 
 var app = builder.Build();
 
@@ -132,6 +141,6 @@ app.MapRazorPages();
 app.MapControllers();
 app.MapHub<VoteHub>("/votehub");
 app.MapReverseProxy();
-app.MapFallbackToFile("index.html");
+app.MapFallbackToPage("/_Host");
 
 app.Run();
