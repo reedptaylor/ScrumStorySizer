@@ -32,7 +32,6 @@ builder.Services.AddSingleton<CommandService>();
 
 #region Client DI
 
-builder.Services.AddScoped(sp => new HttpClient() { BaseAddress = new Uri("https://localhost:5001/") });
 builder.Services.AddScoped<IVotingService, ServerVotingService>();
 
 #endregion
