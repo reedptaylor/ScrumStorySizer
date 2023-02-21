@@ -3,11 +3,11 @@ using ScrumStorySizer.Library.Models;
 
 namespace ScrumStorySizer.Library.Services
 {
-    public class VotingService : IVotingService // State and connection manager for clients
+    public class ClientVotingService : IVotingService // State and connection manager for clients
     {
         public HubConnection HubConnection { get; private set; }
 
-        public VotingService(string hubUrl)
+        public ClientVotingService(string hubUrl)
         {
             // Declare SignalR Hub Connection and set up event handlers
             HubConnection = new HubConnectionBuilder()
@@ -43,11 +43,9 @@ namespace ScrumStorySizer.Library.Services
                 NotifyDataChanged();
             });
 
-            HubConnection.On<WorkItem, List<SizeVote>, bool>(Constants.HUB_COMMAND_NEW_CONNECTION, (workItem, storySizeVotes, showVotes) =>
+            HubConnection.On<VotingServiceData>(Constants.HUB_COMMAND_NEW_CONNECTION, (votingServiceData) =>
             {
-                VotingServiceData.WorkItem = workItem;
-                VotingServiceData.StorySizeVotes = storySizeVotes;
-                VotingServiceData.ShowVotes = showVotes;
+                VotingServiceData = votingServiceData;
                 NotifyDataChanged();
             });
 

@@ -1,74 +1,66 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using ScrumStorySizer.Library;
 using ScrumStorySizer.Library.Models;
+using ScrumStorySizer.Server.Services;
 
 namespace ScrumStorySizer.Server.Hubs
 {
     public class VoteHub : Hub
     {
-        private readonly CacheService _cacheService;
+        private readonly CommandService _commandService;
+        private readonly VotingServiceData _votingServiceCache;
+
+        public VoteHub(CommandService commandService, VotingServiceData votingServiceCache) : base()
+        {
+            _commandService = commandService;
+            _votingServiceCache = votingServiceCache;
+        }
 
         public async override Task OnConnectedAsync()
         {
-            _cacheService.ConnectedClients++;
-            await Clients.All.SendAsync(Constants.HUB_UPDATE_CONNECTED_CLIENTS, _cacheService.ConnectedClients);
+            await _commandService.AddConnectedClientAsync();
             await base.OnConnectedAsync();
         }
 
         public async override Task OnDisconnectedAsync(Exception exception)
         {
-            _cacheService.ConnectedClients--;
-            await Clients.All.SendAsync(Constants.HUB_UPDATE_CONNECTED_CLIENTS, _cacheService.ConnectedClients);
+            await _commandService.RemoveConnectedClientAsync();
             await base.OnDisconnectedAsync(exception);
         }
 
-        public VoteHub(CacheService cacheService) : base()
-        {
-            _cacheService = cacheService;
-        }
-
-        // Methods to update server state cache and relay updates to clients
         public async Task AddStorySizeVotes(SizeVote vote)
         {
-            await Clients.All.SendAsync(Constants.HUB_COMMAND_ADD_VOTES, vote);
-            _cacheService.StorySizeVotes.RemoveAll(item => item.User == vote.User);
-            _cacheService.StorySizeVotes.Add(vote);
+            await _commandService.AddStorySizeVotesAsync(vote);
         }
 
         public async Task ClearStorySizeVotes()
         {
-            await Clients.All.SendAsync(Constants.HUB_COMMAND_CLEAR_VOTES);
-            _cacheService.StorySizeVotes.Clear();
-            _cacheService.ShowVotes = false;
+            await _commandService.ClearStorySizeVotesAsync();
         }
 
         public async Task RevealVotes()
         {
-            _cacheService.ShowVotes = true;
-            await Clients.All.SendAsync(Constants.HUB_COMMAND_REVEAL_VOTES);
+            await _commandService.RevealVotesAsync();
         }
 
         public async Task UpdateWorkItem(WorkItem workItem)
         {
-            _cacheService.WorkItem = workItem;
-            await Clients.All.SendAsync(Constants.HUB_COMMAND_UPDATE_WORK_ITEM, workItem);
+            await _commandService.UpdateWorkItemAsync(workItem);
         }
 
         public async Task NewConnection()
         {
-            await Clients.Caller.SendAsync(Constants.HUB_COMMAND_NEW_CONNECTION, _cacheService.WorkItem, _cacheService.StorySizeVotes, _cacheService.ShowVotes);
+            await Clients.Caller.SendAsync(Constants.HUB_COMMAND_NEW_CONNECTION, _votingServiceCache);
         }
 
         public async Task CancelTimer()
         {
-            await Clients.All.SendAsync(Constants.HUB_COMMAND_CANCEL_TIMER);
+            await _commandService.CancelTimerAsync();
         }
 
         public async Task TimeRemaining(int seconds)
         {
-            await Clients.All.SendAsync(Constants.HUB_COMMAND_TIME_REMAINING, seconds);
+            await _commandService.UpdateTimeRemainingAsync(seconds);
         }
     }
 }
