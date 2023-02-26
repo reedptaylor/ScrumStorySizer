@@ -24,7 +24,7 @@
                 else
                 {
                     <button type="button" title="Start 10 second timer." class="btn btn-primary btn-admin"
-                    disabled="@ShowResultsDisabled" @onclick="() => StartTimer(10)">Start Timer</button>
+                    disabled="@ShowResultsDisabled" @onclick="StartTimer">Start Timer</button>
                 }
                 <button type="button" class="btn btn-primary btn-admin" @onclick="ClearVotes">Clear
                     Votes</button>
@@ -44,7 +44,7 @@
                 else
                 {
                     <button type="button" title="Start 10 second timer." class="btn btn-primary btn-admin"
-                    disabled="@ShowResultsDisabled" @onclick="() => StartTimer(10)">Start Timer</button>
+                    disabled="@ShowResultsDisabled" @onclick="StartTimer">Start Timer</button>
                 }
                 <button type="button" class="btn btn-primary btn-admin" @onclick="ClearVotes">Clear
                     Votes</button>

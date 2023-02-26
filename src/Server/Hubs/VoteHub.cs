@@ -58,9 +58,9 @@ namespace ScrumStorySizer.Server.Hubs
             await _commandService.CancelTimerAsync();
         }
 
-        public async Task TimeRemaining(int seconds)
+        public async Task StartTimer()
         {
-            await _commandService.UpdateTimeRemainingAsync(seconds);
+            await _commandService.StartTimer();
         }
     }
 }

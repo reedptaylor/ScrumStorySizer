@@ -4,7 +4,7 @@ using ScrumStorySizer.Library.Services;
 
 namespace ScrumStorySizer.Server.Services;
 
-public class ServerVotingService : IVotingService
+public class ServerVotingService : IVotingService, IDisposable
 {
     private readonly CommandService _commandService;
     private VotingServiceData _votingServiceCache;
@@ -13,6 +13,8 @@ public class ServerVotingService : IVotingService
     {
         _commandService = commandService;
         _votingServiceCache = votingServiceCache;
+
+        _commandService.OnChange += NotifyDataChanged;
     }
 
     public HubConnection HubConnection => null;
@@ -27,63 +29,47 @@ public class ServerVotingService : IVotingService
 
     public void AddStorySizeVotes(SizeVote vote)
     {
-        Task.Run(() =>
-        {
-            _ = _commandService.AddStorySizeVotesAsync(vote);
-            NotifyDataChanged();
-        });
+        _ = _commandService.AddStorySizeVotesAsync(vote);
     }
 
     public void CancelTimer()
     {
-        Task.Run(() =>
-        {
-            _ = _commandService.CancelTimerAsync();
-            NotifyDataChanged();
-        });
+        _ = _commandService.CancelTimerAsync();
     }
 
     public void ClearStorySizeVotes()
     {
-        Task.Run(() =>
+        Task.Run(async () =>
         {
-            _ = _commandService.ClearStorySizeVotesAsync();
-            NotifyDataChanged();
+            await _commandService.ClearStorySizeVotesAsync();
         });
     }
 
     public void RevealVotes()
     {
-        Task.Run(() =>
-        {
-            _ = _commandService.RevealVotesAsync();
-            NotifyDataChanged();
-        });
+        _ = _commandService.RevealVotesAsync();
     }
 
-    public void TimeRemaining(int seconds)
+    public void StartTimer()
     {
-        Task.Run(() =>
-        {
-            _ = _commandService.UpdateTimeRemainingAsync(seconds);
-            NotifyDataChanged();
-        });
+        _ = _commandService.StartTimer();
     }
 
     public void UpdateWorkItem(WorkItem workItem)
     {
-        Task.Run(() =>
-        {
-            if (workItem is null) workItem = new();
-            workItem.TruncateObject(); // Truncate the object if it will be to big to send over SignalR
+        if (workItem is null) workItem = new();
+        workItem.TruncateObject(); // Truncate the object if it will be to big to send over SignalR
 
-            _ = _commandService.UpdateWorkItemAsync(workItem);
-            NotifyDataChanged();
-        });
+        _ = _commandService.UpdateWorkItemAsync(workItem);
     }
 
     private void NotifyDataChanged()
     {
         OnChange?.Invoke();
+    }
+
+    public void Dispose()
+    {
+        _commandService.OnChange -= NotifyDataChanged;
     }
 }
