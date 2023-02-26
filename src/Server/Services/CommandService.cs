@@ -45,6 +45,7 @@ public class CommandService
     public async Task RevealVotesAsync()
     {
         _votingServiceCache.ShowVotes = true;
+        _votingServiceCache.TimeLeft = 0;
         await _hubContext.Clients.All.SendAsync(Constants.HUB_COMMAND_REVEAL_VOTES);
     }
 
