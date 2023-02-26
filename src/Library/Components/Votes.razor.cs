@@ -2,6 +2,7 @@
 using Microsoft.JSInterop;
 using ScrumStorySizer.Library.Enums;
 using ScrumStorySizer.Library.Models;
+using ScrumStorySizer.Library.Utilities;
 
 namespace ScrumStorySizer.Library.Components
 {
@@ -33,7 +34,7 @@ namespace ScrumStorySizer.Library.Components
             // Display confetti if all users voted the same size
             if (ShowConfetti && groupList.Count() == 1 && groupList[0].Count > 0)
             {
-                await JSRuntime.InvokeVoidAsync("confetti.start", 1000);
+                await JSRuntime.StartConfetti(1000);
             }
         }
     }

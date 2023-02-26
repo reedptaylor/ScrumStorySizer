@@ -5,7 +5,7 @@ namespace ScrumStorySizer.Library.Components
 {
     public partial class ConnectionError // Modal for displaying bad connection state for SignalR updates
     {
-        [Parameter] public HubConnectionState State { get; set; }
+        [Parameter] public HubConnectionState? State { get; set; }
 
         [Inject] NavigationManager NavigationManager { get; set; }
 

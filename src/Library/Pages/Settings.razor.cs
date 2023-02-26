@@ -3,6 +3,7 @@ using Microsoft.JSInterop;
 using ScrumStorySizer.Library.Components;
 using ScrumStorySizer.Library.Models;
 using ScrumStorySizer.Library.Services;
+using ScrumStorySizer.Library.Utilities;
 using System.Text.Json;
 
 namespace ScrumStorySizer.Library.Pages
@@ -28,7 +29,7 @@ namespace ScrumStorySizer.Library.Pages
         private async Task SaveCredential() // Save to localStorage
         {
             string auth = Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(DevOpsCredential));
-            await JSRuntime.InvokeVoidAsync("localStorage.setItem", "devops-auth", auth);
+            await JSRuntime.SetItemLocalStorage("devops-auth", auth);
         }
 
         private async Task SetEnabled(bool value) // Test credential if changing to enabled otherwise just save
@@ -81,7 +82,7 @@ namespace ScrumStorySizer.Library.Pages
             try
             {
                 string json = Convert.ToBase64String(JsonSerializer.SerializeToUtf8Bytes(TeamMemberSettings));
-                await JSRuntime.InvokeVoidAsync("localStorage.setItem", "team-member-settings", json);
+                await JSRuntime.SetItemLocalStorage("team-member-settings", json);
                 _messagePopUp.ShowMessage("Settings are saved.");
             }
             catch
@@ -95,11 +96,14 @@ namespace ScrumStorySizer.Library.Pages
             _messagePopUp.ShowMessage(patHelpText + " <a href=\"https://docs.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate\" target=\"_blank\">Click here for help.</a>", true);
         }
 
-        protected async override Task OnInitializedAsync()
+        protected async override Task OnAfterRenderAsync(bool firstRender)
         {
-            // Load settings from localStorage
-            DevOpsCredential = await Helper.GetScrumMasterSettings<DevOpsCredential>(JSRuntime);
-            TeamMemberSettings = await Helper.GetTeamMemberSettings(JSRuntime);
+            if (firstRender)
+            {
+                DevOpsCredential = await Helper.GetScrumMasterSettings<DevOpsCredential>(JSRuntime);
+                TeamMemberSettings = await Helper.GetTeamMemberSettings(JSRuntime);
+                await InvokeAsync(StateHasChanged);
+            }
         }
     }
 }

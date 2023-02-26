@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.SignalR.Client
 
-@if (State != HubConnectionState.Connected && State != HubConnectionState.Connecting)
+@if (State.HasValue && State != HubConnectionState.Connected && State != HubConnectionState.Connecting)
 {
     <div id="connection-modal" tabindex="0" class="modal">
         <div id="connection-modal-body" class="modal-content d-block">

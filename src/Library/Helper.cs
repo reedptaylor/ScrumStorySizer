@@ -2,6 +2,7 @@ using Ganss.XSS;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using ScrumStorySizer.Library.Models;
+using ScrumStorySizer.Library.Utilities;
 using System.Text;
 using System.Text.Json;
 
@@ -12,7 +13,13 @@ namespace ScrumStorySizer.Library
         public static async Task<T> GetScrumMasterSettings<T>(IJSRuntime jsRuntime) where T : IScrumMasterSettings, new()
         {
             T settings = new();
-            string scrumMasterSettings = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "devops-auth");
+
+            string scrumMasterSettings="";
+            try
+            {
+                scrumMasterSettings = await jsRuntime.GetItemLocalStorage("devops-auth");
+            }
+            catch (JSDisconnectedException) { }
 
             if (!string.IsNullOrWhiteSpace(scrumMasterSettings))
             {
@@ -30,7 +37,13 @@ namespace ScrumStorySizer.Library
         public static async Task<TeamMemberSettings> GetTeamMemberSettings(IJSRuntime jsRuntime)
         {
             TeamMemberSettings settings = new();
-            string teamMemberSettings = await jsRuntime.InvokeAsync<string>("localStorage.getItem", "team-member-settings");
+
+            string teamMemberSettings = "";
+            try
+            {
+                teamMemberSettings = await jsRuntime.GetItemLocalStorage("team-member-settings");
+            }
+            catch (JSDisconnectedException) { }
 
             if (!string.IsNullOrWhiteSpace(teamMemberSettings))
             {

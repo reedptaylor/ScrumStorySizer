@@ -9,46 +9,65 @@ namespace ScrumStorySizer.Library.Pages
     public partial class Team : IDisposable // Scrum Team Page
     {
         [Inject] protected IJSRuntime JSRuntime { get; set; }
-        [Inject] IVotingService PokerVote { get; set; }
+        [Inject] IVotingService VotingService { get; set; }
+        [Inject] PersistentComponentState ApplicationState { get; set; }
 
         private void AddVote(StorySize vote)
         {
-            PokerVote.AddStorySizeVotes(new SizeVote() { Size = vote, User = Username });
+            VotingService.AddStorySizeVotes(new SizeVote() { Size = vote, User = Username });
             ChangeVote = false;
             NameDisabled = true; // Don't allow the user to change their name after voting
             jumboclass = "jumbo-shrink"; // Shrink jumbo after voting
         }
 
         private TeamMemberSettings TeamMemberSettings { get; set; } = new();
-
         private string jumboclass = "";
+        private PersistingComponentStateSubscription persistingSubscription;
 
         protected bool NameDisabled { get; set; } = false;
 
         private string Username { get; set; }
 
-        private bool VoteDisabled => string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(PokerVote.WorkItem?.Title);
+        private bool VoteDisabled => string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(VotingService.VotingServiceData.WorkItem?.Title);
 
         private bool ChangeVote { get; set; } = false;
 
-        void OnUpdate()
+        void OnUpdate() => InvokeAsync(StateHasChanged);
+
+        private Task PersistData()
         {
-            InvokeAsync(() =>
-            {
-                StateHasChanged();
-            });
+            ApplicationState.PersistAsJson($"{nameof(Team)}_{nameof(Username)}", Username);
+
+            return Task.CompletedTask;
         }
 
-        protected async override Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
-            PokerVote.OnChange += OnUpdate;
-            TeamMemberSettings = await Helper.GetTeamMemberSettings(JSRuntime);
-            Username = TeamMemberSettings.DefaultDisplayName;
+            VotingService.OnChange += OnUpdate;
+
+            persistingSubscription = ApplicationState.RegisterOnPersisting(PersistData);
+            if (ApplicationState.TryTakeFromJson<string>($"{nameof(Team)}_{nameof(Username)}", out string restored))
+                Username = restored;
+        }
+
+        protected async override Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                TeamMemberSettings = await Helper.GetTeamMemberSettings(JSRuntime);
+
+                if (string.IsNullOrWhiteSpace(Username))
+                    Username = TeamMemberSettings.DefaultDisplayName;
+
+                await InvokeAsync(StateHasChanged);
+            }
         }
 
         public void Dispose()
         {
-            PokerVote.OnChange -= OnUpdate;
+            VotingService.OnChange -= OnUpdate;
+
+            persistingSubscription.Dispose();
         }
     }
 }

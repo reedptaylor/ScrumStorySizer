@@ -13,7 +13,7 @@ namespace ScrumStorySizer.Library.Models
 
         public bool IsEnabled { get; set; }
 
-        public bool ShowDescription { get; set; }
+        public bool ShowDescription { get; set; } = true;
 
         public List<string> TagsToAdd { get; set; } = new();
 

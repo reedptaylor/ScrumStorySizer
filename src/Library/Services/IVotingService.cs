@@ -9,11 +9,7 @@ namespace ScrumStorySizer.Library.Services
     public interface IVotingService
     {
         HubConnection HubConnection { get; }
-        WorkItem WorkItem { get; set; }
-        List<SizeVote> StorySizeVotes { get; }
-        bool ShowVotes { get; }
-        int ConnectedClients { get; }
-        int TimeLeft { get; }
+        VotingServiceData VotingServiceData { get; set; }
         event Action OnChange;
         void AddStorySizeVotes(SizeVote vote);
         void ClearStorySizeVotes();

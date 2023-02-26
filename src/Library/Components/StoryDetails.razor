@@ -2,7 +2,7 @@
     <div class="row my-0">
         <div class="col">
             <h6 class="card-title">Story Name</h6>
-            <h4 class="mb-0">@(string.IsNullOrWhiteSpace(PokerVote.WorkItem?.Title) ? "Waiting..." : PokerVote.WorkItem.Title)</h4>
+            <h4 class="mb-0">@(string.IsNullOrWhiteSpace(VotingService.VotingServiceData.WorkItem?.Title) ? "Waiting..." : VotingService.VotingServiceData.WorkItem.Title)</h4>
         </div>
     </div>
 
