@@ -22,36 +22,21 @@ namespace ScrumStorySizer.Library.Pages
 
         protected bool ShowResultsDisabled => VotingService.VotingServiceData.StorySizeVotes.Count == 0 || VotingService.VotingServiceData.ShowVotes;
 
-        protected bool TimerActive { get; set; }
+        // protected bool TimerActive { get; set; }
 
-        protected void StartTimer(int seconds)
+        protected void StartTimer()
         {
-            TimerActive = true;
-            _ = Task.Run(async () => // Run timer in background thread
-            {
-                while (seconds > 0 && TimerActive)
-                {
-                    VotingService.TimeRemaining(seconds);
-                    seconds--;
-                    await Task.Delay(1000);
-                }
-                if (TimerActive)
-                {
-                    RevealVotes();
-                }
-            });
+            VotingService.StartTimer();
         }
 
         public void CancelTimer()
         {
             VotingService.CancelTimer();
-            TimerActive = false;
         }
 
         protected void RevealVotes()
         {
             VotingService.RevealVotes();
-            TimerActive = false;
         }
 
         protected void ClearVotes()
@@ -62,7 +47,6 @@ namespace ScrumStorySizer.Library.Pages
         protected void UpdateWorkItem(WorkItem workItem)
         {
             VotingService.UpdateWorkItem(workItem);
-            TimerActive = false;
         }
 
         protected void NewStory()

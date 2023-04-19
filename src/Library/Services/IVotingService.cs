@@ -15,7 +15,7 @@ namespace ScrumStorySizer.Library.Services
         void ClearStorySizeVotes();
         void UpdateWorkItem(WorkItem workItem);
         void RevealVotes();
-        void TimeRemaining(int seconds);
+        void StartTimer();
         void CancelTimer();
     }
 }

@@ -55,7 +55,7 @@ namespace ScrumStorySizer.Library.Services
                 NotifyDataChanged();
             });
 
-            HubConnection.On<int>(Constants.HUB_COMMAND_TIME_REMAINING, (seconds) =>
+            HubConnection.On<int>(Constants.HUB_UPDATE_TIME_REMAINING, (seconds) =>
             {
                 VotingServiceData.TimeLeft = seconds;
                 NotifyDataChanged();
@@ -101,9 +101,9 @@ namespace ScrumStorySizer.Library.Services
             HubConnection.SendAsync(Constants.HUB_COMMAND_CANCEL_TIMER);
         }
 
-        public void TimeRemaining(int seconds)
+        public void StartTimer()
         {
-            HubConnection.SendAsync(Constants.HUB_COMMAND_TIME_REMAINING, seconds);
+            HubConnection.SendAsync(Constants.HUB_COMMAND_START_TIMER);
         }
 
         private void NotifyDataChanged()
