@@ -14,7 +14,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="6.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.0" />
-    <PackageReference Include="HtmlSanitizer" Version="6.0.453" />
+    <PackageReference Include="HtmlSanitizer" Version="8.0.723" />
   </ItemGroup>
   
 </Project>
