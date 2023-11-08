@@ -1,4 +1,4 @@
-using Ganss.XSS;
+using Ganss.Xss;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using ScrumStorySizer.Library.Models;
@@ -60,12 +60,13 @@ namespace ScrumStorySizer.Library
 
         public static MarkupString ConvertToMarkupString(this string html) => new MarkupString(html);
 
-        public static string SanitizeHTML(this string html, bool allowCss = false) // Default allowCss to false to help display better in app and trim down on total size
+        public static string SanitizeHTML(this string html)
         {
             if (string.IsNullOrWhiteSpace(html))
                 return string.Empty;
 
-            HtmlSanitizer sanitizer = new(allowedCssProperties: allowCss ? null : new List<string>()); // Use GANSS library to sanitize HTML to prevent XSS attacks
+            // Use GANSS library to sanitize HTML to prevent XSS attacks
+            HtmlSanitizer sanitizer = new();
             return sanitizer.Sanitize(html);
         }
 
