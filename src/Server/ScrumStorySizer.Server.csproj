@@ -4,6 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <ContainerImageName>scrumstorysizer</ContainerImageName>
+    <ContainerRepository>registry.hub.docker.com</ContainerRepository>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,8 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ContainerImageName>scrumstorysizer</ContainerImageName>
-    <ContainerRepository>registry.hub.docker.com</ContainerRepository>
     <ContainerEnvironmentVariable Include="ASPNETCORE_HTTP_PORTS" Value="5000" />
     <ContainerEnvironmentVariable Include="RELEASE_NOTES_PATH" Value="release-notes" />
   </ItemGroup>
