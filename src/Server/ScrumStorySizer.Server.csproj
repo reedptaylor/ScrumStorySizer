@@ -4,8 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ContainerImageName>scrumstorysizer</ContainerImageName>
-    <ContainerRepository>registry.hub.docker.com</ContainerRepository>
+    <ContainerRepository>reedptaylor/scrumstorysizer</ContainerRepository>
+    <ContainerRegistry>registry.hub.docker.com</ContainerRegistry>
   </PropertyGroup>
 
   <ItemGroup>
