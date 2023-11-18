@@ -20,12 +20,12 @@ builder.Services.AddSignalR(options =>
 
 builder.Services.AddResponseCompression(options =>
 {
-    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-        new[] { "application/octet-stream" });
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat( [ "application/octet-stream" ]);
 });
 
+// Use reverse proxy to allow clients to make requests to DevOps
 builder.Services.AddReverseProxy()
-    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy")); // Use reverse proxy to allow clients to make requests to DevOps
+    .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
 builder.Services.AddSingleton<VotingServiceData>();
 builder.Services.AddSingleton<CommandService>();
@@ -51,7 +51,7 @@ app.UseStaticFiles(new StaticFileOptions
     {
         if (ctx.Context.Request.Path.HasValue && (ctx.Context.Request.Path.Value.Contains("/api") || ctx.Context.Request.Path.Value.Contains("/devops")
             || ctx.Context.Request.Path.Value.EndsWith("site.css") || ctx.Context.Request.Path.Value.EndsWith("site.js")))
-            ctx.Context.Response.Headers.Add("Cache-Control", "no-cache");
+            ctx.Context.Response.Headers.Append("Cache-Control", "no-cache");
     }
 });
 
@@ -67,15 +67,15 @@ app.MapGet("release-notes", async (context) => // Map release notes endpoint
         path = "../../release-notes";
 
     List<Task<string>> fileTasks = new();
-    IEnumerable<string> files = System.IO.Directory.GetFiles($"{path}/versions").OrderByDescending(f => f); // Get all version file paths 
+    IEnumerable<string> files = Directory.GetFiles($"{path}/versions").OrderByDescending(f => f); // Get all version file paths 
 
     string markdown;
     if (!string.IsNullOrWhiteSpace(specificVersion))
     {
         if (specificVersion.Equals("latest", StringComparison.InvariantCultureIgnoreCase)) // Get only latest version
-            markdown = await System.IO.File.ReadAllTextAsync(files.FirstOrDefault());
+            markdown = await File.ReadAllTextAsync(files.FirstOrDefault());
         else if (files.Any(f => f.EndsWith($"{specificVersion}.md"))) // Get specific version
-            markdown = await System.IO.File.ReadAllTextAsync(files.FirstOrDefault(f => f.EndsWith($"{specificVersion}.md")));
+            markdown = await File.ReadAllTextAsync(files.FirstOrDefault(f => f.EndsWith($"{specificVersion}.md")));
         else // Version not found
         {
             context.Response.StatusCode = 404;
@@ -87,7 +87,7 @@ app.MapGet("release-notes", async (context) => // Map release notes endpoint
     {
         foreach (string file in files) // Get all versions
         {
-            fileTasks.Add(System.IO.File.ReadAllTextAsync(file));
+            fileTasks.Add(File.ReadAllTextAsync(file));
         }
         await Task.WhenAll(fileTasks);
         markdown = fileTasks.Select(t => t.Result).Aggregate((a, b) => a + Environment.NewLine + Environment.NewLine + b)?.Trim();
