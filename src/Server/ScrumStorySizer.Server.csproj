@@ -19,8 +19,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="$(ProjectDir)../../release-notes/**" Link="release-notes/%(RecursiveDir)%(FileName)%(Extension)">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ContainerEnvironmentVariable Include="ASPNETCORE_HTTP_PORTS" Value="5000" />
-    <ContainerEnvironmentVariable Include="RELEASE_NOTES_PATH" Value="release-notes" />
   </ItemGroup>
 
 </Project>

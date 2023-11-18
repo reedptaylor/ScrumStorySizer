@@ -62,12 +62,21 @@ app.MapGet("release-notes", async (context) => // Map release notes endpoint
     string format = context.Request.Query["format"];
     string specificVersion = context.Request.Query["version"];
 
-    string path = Environment.GetEnvironmentVariable("RELEASE_NOTES_PATH"); // Set path from environment if running from Docker
-    if (string.IsNullOrEmpty(path))
-        path = "../../release-notes";
+    string path = $"{AppDomain.CurrentDomain.BaseDirectory}release-notes";
 
-    List<Task<string>> fileTasks = new();
-    IEnumerable<string> files = Directory.GetFiles($"{path}/versions").OrderByDescending(f => f); // Get all version file paths 
+    // Get all version file paths
+    List<Task<string>> fileTasks = [];
+    IEnumerable<string> files = Directory.GetFiles($"{path}/versions").OrderByDescending(f =>
+    {
+        string fileName = Path.GetFileNameWithoutExtension(f);
+        int semVerCardinality = fileName.Count(c => c == '.');
+        while (semVerCardinality < 3)
+        {
+            fileName += ".0";
+            semVerCardinality += 1;
+        }
+        return fileName;
+    });
 
     string markdown;
     if (!string.IsNullOrWhiteSpace(specificVersion))
@@ -106,7 +115,7 @@ app.MapGet("release-notes", async (context) => // Map release notes endpoint
     else
     {
         context.Response.ContentType = "text/html"; // Set to display page as HTML
-        string htmlTemplate = await System.IO.File.ReadAllTextAsync($"{path}/release-notes-template.html");
+        string htmlTemplate = await File.ReadAllTextAsync($"{path}/release-notes-template.html");
         await context.Response.WriteAsync(string.Format(htmlTemplate, Markdown.ToHtml(markdown))); // Convert markdown to html and inject into template
     }
 });

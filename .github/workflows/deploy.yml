@@ -45,7 +45,7 @@ jobs:
       - name: get version number
         run: |
           if [ ${{ github.ref }} == 'refs/heads/main' ]; then
-            echo "VERSION_NUMBER=$(ls *.md | sort -r | head -1 | sed 's/.md//g');latest" >> $GITHUB_ENV
+            echo "VERSION_NUMBER=$(ls *.md | sort -rV | head -1 | sed 's/.md//g');latest" >> $GITHUB_ENV
           else
             echo "VERSION_NUMBER=dev" >> $GITHUB_ENV
           fi
