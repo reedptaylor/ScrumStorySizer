@@ -1,0 +1,83 @@
+name: deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'The reason for running the deployment'
+        required: true
+        default: 'Manual deploy from GitHub UI'
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: print run reason
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          echo '# Run Reason' >> $GITHUB_STEP_SUMMARY
+          echo '${{ github.event.inputs.reason }}' >> $GITHUB_STEP_SUMMARY
+        shell: bash
+
+      - name: dotnet install
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: "8.0"
+
+      - name: dotnet restore
+        run: dotnet restore
+      - name: dotnet build
+        run: dotnet build --no-restore /clp:NoSummary
+      - name: dotnet test
+        run: dotnet test --no-build --verbosity normal
+
+      - name: docker login
+        uses: docker/login-action@v3
+        with:
+          registry: registry.hub.docker.com
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: get version number
+        run: |
+          if [ ${{ github.ref }} == 'refs/heads/main' ]; then
+            echo "VERSION_NUMBER=$(ls *.md | sort -rV | head -1 | sed 's/.md//g');latest" >> $GITHUB_ENV
+          else
+            echo "VERSION_NUMBER=dev" >> $GITHUB_ENV
+          fi
+
+      - name: dotnet publish to registry
+        run: |
+          dotnet publish src/Server/ScrumStorySizer.Server.csproj -r linux-x64 -c Release -p:'PublishProfile=DefaultContainer,ContainerImageTags="${{ env.VERSION_NUMBER }}"'
+
+  dev:
+    needs: build
+    if: ${{ github.ref != 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    environment: dev
+    steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          known_hosts: ${{ secrets.SERVER_SSH_KNOWN_HOSTS }}
+      - name: Docker Run
+        run: ssh reed@${{ secrets.SERVER_SSH_HOST }} 'docker container rm -f scrumstorysizer-dev | docker run --rm -d --name scrumstorysizer-dev --pull always -p 5009:5000/tcp reedptaylor/scrumstorysizer:dev'
+
+  prod:
+    needs: build
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    environment: prod
+    steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          known_hosts: ${{ secrets.SERVER_SSH_KNOWN_HOSTS }}
+      - name: Docker Run
+        run: ssh reed@${{ secrets.SERVER_SSH_HOST }} 'docker container rm -f scrumstorysizer-prod | docker run --rm -d --name scrumstorysizer-prod --pull always -p 5008:5000/tcp reedptaylor/scrumstorysizer:latest'
